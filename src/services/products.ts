@@ -7,7 +7,7 @@ export const mockProducts: Product[] = [
     id: "prod-1",
     name: "PlayStation 5 Slim 1TB",
     description: "Consola PS5 versión digital o física con chasis reducido. Rendimiento 4K HDR a 120 FPS y retrocompatibilidad.",
-    price: 35000,
+    price: 31500,
     images: ["https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=600&q=80"],
     status: "nuevo",
     availability: "disponible",
