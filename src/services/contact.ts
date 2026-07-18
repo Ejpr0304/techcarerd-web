@@ -47,9 +47,10 @@ export async function submitContactMessage(
 
       if (error) throw error;
       return { success: true };
-    } catch (err: any) {
+    } catch (err) {
       console.error("Error al guardar mensaje en Supabase:", err);
-      return { success: false, error: err.message || "Error al enviar mensaje a la base de datos." };
+      const errorMessage = err instanceof Error ? err.message : "Error al enviar mensaje a la base de datos.";
+      return { success: false, error: errorMessage };
     }
   }
 

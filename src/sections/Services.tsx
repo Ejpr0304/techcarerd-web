@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, Variants } from "framer-motion";
 import { getServices } from "@/services/services";
 import { Service } from "@/types";
@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import * as Icons from "lucide-react";
 
 function ServiceIcon({ name, className }: { name: string; className?: string }) {
-  const Icon = (Icons as any)[name] || Icons.Wrench;
+  const Icon = (Icons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[name] || Icons.Wrench;
   return <Icon className={className} />;
 }
 
