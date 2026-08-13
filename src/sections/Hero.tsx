@@ -64,9 +64,9 @@ export function Hero() {
             variants={itemVariants}
             className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white max-w-4xl leading-tight"
           >
-            Devuelve la potencia original a tu{" "}
+            Cuidamos tu tecnología.{" "}
             <span className="bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(37,99,235,0.3)]">
-              Tecnología
+              Potenciamos tu experiencia.
             </span>
           </motion.h1>
 

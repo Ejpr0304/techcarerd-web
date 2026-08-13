@@ -16,87 +16,104 @@ export function LogoIcon({ className, size = 40, ...props }: LogoIconProps) {
       className={className}
       {...props}
     >
-      {/* Laptop Screen (Grosor y bordes redondeados) */}
+      {/* Laptop Screen Frame */}
       <rect
         x="24"
-        y="18"
+        y="15"
         width="52"
-        height="35"
-        rx="5"
-        stroke="#2563EB"
+        height="32"
+        rx="4"
+        stroke="currentColor"
+        strokeWidth="3.5"
+        fill="none"
+      />
+
+      {/* Syringe (Inside Screen Left) */}
+      <g stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {/* Barrel */}
+        <rect x="37" y="24" width="10" height="15" transform="rotate(-35 42 31.5)" rx="1" />
+        {/* Plunger & Rod */}
+        <path d="M 43 20 L 48 13" />
+        <path d="M 45 11 L 51 15" />
+        <path d="M 41 23 L 43 24" />
+        {/* Syringe Tip */}
+        <path d="M 35 37 L 33 40" strokeWidth="2.5" />
+        {/* Drop */}
+        <circle cx="31.5" cy="43" r="1.5" fill="currentColor" stroke="none" />
+      </g>
+
+      {/* Cleaning Brush (Inside Screen Right) */}
+      <g stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {/* Handle */}
+        <path d="M 66 18 C 68 20 67 22 65 24 L 58 31" />
+        {/* Ferrule (Metal Collar) */}
+        <path d="M 58 31 L 55 34" strokeWidth="3" />
+        {/* Bristles (Flared) */}
+        <path d="M 54 35 L 48 42 C 47 43 51 46 54 44 L 58 38 Z" fill="currentColor" opacity="0.8" />
+      </g>
+
+      {/* Laptop Base Tray */}
+      <path
+        d="M 18 49 C 18 53 21 55 25 55 H 75 C 79 55 82 53 82 49 Z"
+        stroke="currentColor"
         strokeWidth="3.5"
         strokeLinejoin="round"
         fill="none"
       />
-
-      {/* Red Cross inside Screen (Cruz médica de cuidado/techcare) */}
+      {/* Trackpad Notch */}
       <path
-        d="M50 26V43M41.5 34.5H58.5"
-        stroke="#C53030"
+        d="M 44 50 H 56"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+
+      {/* Wrench and Gear Bar (Below Laptop Base) */}
+      {/* Wrench Handle Shaft */}
+      <path
+        d="M 33 65 H 64"
+        stroke="currentColor"
         strokeWidth="4.5"
         strokeLinecap="round"
       />
 
-      {/* Laptop Keyboard Base & Trackpad area */}
+      {/* Left Wrench Open Jaw */}
       <path
-        d="M19 53C19 55.5 21 57.5 24.5 57.5H75.5C79 57.5 81 55.5 81 53V53H19V53Z"
-        stroke="#2563EB"
-        strokeWidth="3.5"
-        strokeLinejoin="round"
-        fill="none"
-      />
-      <path
-        d="M40 53H60"
-        stroke="#2563EB"
-        strokeWidth="3.5"
-        strokeLinecap="round"
-      />
-
-      {/* Wrench Tool below the Laptop */}
-      {/* Wrench Shaft / Handle */}
-      <path
-        d="M36 67.5H64"
-        stroke="#2563EB"
-        strokeWidth="4"
-        strokeLinecap="round"
-      />
-
-      {/* Wrench Open Claw (Left side) */}
-      <path
-        d="M36 67.5C36 63.5 32 61 28.5 63C25 65 25 70 28.5 72C32 74 36 71.5 36 67.5Z"
-        stroke="#2563EB"
+        d="M 35 65 C 35 60 30 58 25 60 C 21 62 21 68 25 70 C 30 72 35 70 35 65 Z"
+        stroke="currentColor"
         strokeWidth="3.5"
         fill="none"
       />
-      {/* Open jaw gap */}
+      {/* Jaw Gap */}
       <path
-        d="M24 67.5H30.5"
-        stroke="#0F172A"
+        d="M 20 65 H 28"
+        stroke="currentColor"
         strokeWidth="3.5"
         strokeLinecap="round"
       />
 
-      {/* Wrench Ring End with Inner Gear/Cog (Right side) */}
+      {/* Right Cog / Gear Wheel */}
       <circle
-        cx="67.5"
-        cy="67.5"
-        r="6.5"
-        stroke="#2563EB"
-        strokeWidth="3.5"
+        cx="69"
+        cy="65"
+        r="7.5"
+        stroke="currentColor"
+        strokeWidth="3"
         fill="none"
       />
-      {/* Cog core circle */}
       <circle
-        cx="67.5"
-        cy="67.5"
-        r="2"
-        fill="#2563EB"
+        cx="69"
+        cy="65"
+        r="3"
+        stroke="currentColor"
+        strokeWidth="2"
+        fill="none"
       />
-      {/* Cog wheel teeth */}
+      {/* Gear Teeth */}
       <path
-        d="M67.5 60.5V62.5M67.5 72.5V74.5M60.5 67.5H62.5M72.5 67.5H74.5"
-        stroke="#2563EB"
-        strokeWidth="2.5"
+        d="M 69 55.5 V 57.5 M 69 72.5 V 74.5 M 59.5 65 H 61.5 M 76.5 65 H 78.5 M 62.5 58.5 L 64 60 M 74 70 L 75.5 71.5 M 62.5 71.5 L 64 70 M 74 60 L 75.5 58.5"
+        stroke="currentColor"
+        strokeWidth="2"
         strokeLinecap="round"
       />
     </svg>
