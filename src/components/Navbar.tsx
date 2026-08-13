@@ -36,12 +36,13 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="#inicio" className="flex items-center gap-2 group">
-            <div className="relative flex items-center justify-center w-10 h-10 transition-all duration-300 group-hover:scale-105">
-              <LogoIcon size={38} className="transition-all duration-300 group-hover:drop-shadow-[0_0_10px_rgba(37,99,235,0.5)]" />
+            <div className="relative flex items-center h-11 transition-all duration-300 group-hover:scale-105">
+              <img
+                src="/logo-darkmode.png"
+                alt="TechCareRD Logo"
+                className="h-10 sm:h-12 w-auto object-contain filter drop-shadow-[0_0_12px_rgba(37,99,235,0.4)]"
+              />
             </div>
-            <span className="text-xl font-bold tracking-tight text-white transition-all duration-300 group-hover:opacity-90">
-              TechCare<span className="text-[#C53030] transition-colors duration-300 group-hover:text-red-500 drop-shadow-[0_0_8px_rgba(197,48,48,0.5)]">RD</span>
-            </span>
           </Link>
 
           {/* Desktop Navigation */}

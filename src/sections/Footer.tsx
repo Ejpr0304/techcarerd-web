@@ -35,13 +35,14 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand Column */}
           <div className="space-y-4">
-            <Link href="#inicio" className="flex items-center gap-2 group">
-              <div className="flex items-center justify-center w-9 h-9 transition-all duration-300 group-hover:scale-105">
-                <LogoIcon size={34} className="transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
+            <Link href="#inicio" className="inline-flex items-center group">
+              <div className="relative flex items-center h-14 transition-all duration-300 group-hover:scale-105">
+                <img
+                  src="/logo-darkmode.png"
+                  alt="TechCareRD Logo"
+                  className="h-12 sm:h-14 w-auto object-contain filter drop-shadow-[0_0_10px_rgba(37,99,235,0.4)]"
+                />
               </div>
-              <span className="text-lg font-bold text-white tracking-tight">
-                TechCare<span className="text-[#C53030]">RD</span>
-              </span>
             </Link>
             <p className="text-sm text-neutral-500 leading-relaxed">
               Taller técnico y tienda especializada en el cuidado y optimización de tus dispositivos de juego y cómputo favoritos.
