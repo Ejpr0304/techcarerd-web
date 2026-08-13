@@ -15,11 +15,7 @@ async function processLogo() {
   );
   const publicDir = path.join(__dirname, "..", "public");
 
-  // 1. Copy raw original JPG & PNG
-  fs.copyFileSync(inputPath, path.join(publicDir, "logo.jpg"));
-  fs.copyFileSync(inputPath, path.join(publicDir, "logo.png"));
-
-  // 2. Make white background transparent
+  // Load raw image buffer
   const image = sharp(inputPath);
   const { data, info } = await image
     .ensureAlpha()
@@ -38,14 +34,15 @@ async function processLogo() {
     }
   }
 
-  // Save logo-transparent.png
+  // 1. Trim blank padding from full transparent logo
   await sharp(data, {
     raw: { width: info.width, height: info.height, channels: 4 },
   })
+    .trim() // Remove empty transparent borders so logo is max size
     .png()
     .toFile(path.join(publicDir, "logo-transparent.png"));
 
-  // 3. Create darkmode version (lightened blue text so it glows & pops on dark navy/black background)
+  // 2. Trim blank padding from darkmode version with enhanced colors
   const darkData = Buffer.from(data);
   for (let i = 0; i < darkData.length; i += 4) {
     const a = darkData[i + 3];
@@ -54,7 +51,7 @@ async function processLogo() {
       let g = darkData[i + 1];
       let b = darkData[i + 2];
 
-      // If color is dark blue (r < 50, g < 100, b > 100) -> brighten to electric blue for dark mode
+      // Lighten royal blue to vivid electric blue for dark backgrounds
       if (b > r + 30 && b > g + 10 && r < 100) {
         darkData[i] = Math.min(255, r + 40);
         darkData[i + 1] = Math.min(255, g + 80);
@@ -66,10 +63,25 @@ async function processLogo() {
   await sharp(darkData, {
     raw: { width: info.width, height: info.height, channels: 4 },
   })
+    .trim()
     .png()
     .toFile(path.join(publicDir, "logo-darkmode.png"));
 
-  console.log("Logo assets generated successfully!");
+  // 3. Emblem only trimmed (Laptop + Syringe + Brush + Wrench + Gear)
+  const emblemHeight = Math.floor(info.height * 0.68);
+  const emblemData = await sharp(data, {
+    raw: { width: info.width, height: info.height, channels: 4 },
+  })
+    .extract({ left: 0, top: 0, width: info.width, height: emblemHeight })
+    .png()
+    .toBuffer();
+
+  await sharp(emblemData)
+    .trim()
+    .png()
+    .toFile(path.join(publicDir, "logo-emblem-transparent.png"));
+
+  console.log("Trimmed logo assets generated successfully!");
 }
 
 processLogo().catch(console.error);

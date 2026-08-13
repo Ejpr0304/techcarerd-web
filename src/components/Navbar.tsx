@@ -35,13 +35,19 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="#inicio" className="flex items-center gap-2 group">
-            <div className="relative flex items-center h-11 transition-all duration-300 group-hover:scale-105">
-              <img
-                src="/logo-darkmode.png"
-                alt="TechCareRD Logo"
-                className="h-10 sm:h-12 w-auto object-contain filter drop-shadow-[0_0_12px_rgba(37,99,235,0.4)]"
-              />
+          <Link href="#inicio" className="flex items-center gap-3 group">
+            <img
+              src="/logo-emblem-transparent.png"
+              alt="TechCareRD Emblem"
+              className="h-11 sm:h-13 w-auto object-contain transition-all duration-300 group-hover:scale-105 filter drop-shadow-[0_0_12px_rgba(37,99,235,0.5)]"
+            />
+            <div className="flex flex-col justify-center">
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-white leading-none group-hover:text-blue-100 transition-colors">
+                TechCare<span className="text-[#D31027] group-hover:text-red-500 transition-colors drop-shadow-[0_0_8px_rgba(211,16,39,0.5)]">RD</span>
+              </span>
+              <span className="text-[9px] sm:text-[10.5px] font-bold text-blue-400 tracking-[0.18em] uppercase leading-tight mt-1 opacity-90">
+                Servicios Técnicos Profesionales
+              </span>
             </div>
           </Link>
 

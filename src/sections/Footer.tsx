@@ -36,11 +36,11 @@ export function Footer() {
           {/* Brand Column */}
           <div className="space-y-4">
             <Link href="#inicio" className="inline-flex items-center group">
-              <div className="relative flex items-center h-14 transition-all duration-300 group-hover:scale-105">
+              <div className="relative flex items-center transition-all duration-300 group-hover:scale-105">
                 <img
                   src="/logo-darkmode.png"
                   alt="TechCareRD Logo"
-                  className="h-12 sm:h-14 w-auto object-contain filter drop-shadow-[0_0_10px_rgba(37,99,235,0.4)]"
+                  className="h-24 sm:h-28 w-auto object-contain filter drop-shadow-[0_0_15px_rgba(37,99,235,0.4)]"
                 />
               </div>
             </Link>
