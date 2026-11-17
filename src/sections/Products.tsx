@@ -22,6 +22,13 @@ export function Products() {
       setLoading(false);
     }
     loadProducts();
+
+    const handleUpdate = () => {
+      loadProducts();
+    };
+
+    window.addEventListener("inventory_updated", handleUpdate);
+    return () => window.removeEventListener("inventory_updated", handleUpdate);
   }, [activeCategory]);
 
   const categories = [
@@ -113,14 +120,14 @@ export function Products() {
                         </span>
                         <span
                           className={`px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase rounded text-white backdrop-blur-sm shadow-md ${
-                            product.availability === "disponible"
-                              ? "bg-green-600/90"
-                              : product.availability === "bajo pedido"
-                              ? "bg-amber-600/90"
-                              : "bg-[#C53030]/90"
+                            (product.stock ?? 1) > 0
+                              ? "bg-emerald-600/90"
+                              : "bg-red-600/90"
                           }`}
                         >
-                          {product.availability}
+                          {(product.stock ?? 1) > 0
+                            ? `${product.stock ?? 1} ${(product.stock ?? 1) === 1 ? "disponible" : "disponibles"}`
+                            : "Agotado"}
                         </span>
                       </div>
                     </div>
@@ -170,11 +177,11 @@ export function Products() {
                     className="w-full"
                   >
                     <Button
-                      className="w-full bg-neutral-900 hover:bg-blue-600 hover:text-white text-neutral-300 font-semibold text-xs py-5 rounded-lg border border-neutral-800 hover:border-blue-500 transition-all duration-300 gap-2 cursor-pointer"
-                      disabled={product.availability === "agotado"}
+                      className="w-full bg-neutral-900 hover:bg-blue-600 hover:text-white text-neutral-300 font-semibold text-xs py-5 rounded-lg border border-neutral-800 hover:border-blue-500 transition-all duration-300 gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={product.stock === 0 || product.availability === "agotado"}
                     >
                       <MessageSquare className="w-3.5 h-3.5" />
-                      Consultar Disponibilidad
+                      {product.stock === 0 ? "Artículo Agotado" : "Consultar Disponibilidad"}
                     </Button>
                   </a>
                 </CardFooter>

@@ -21,6 +21,17 @@ export interface Product {
   availability: ProductAvailability;
   category: ProductCategory;
   specs?: Record<string, string>;
+  stock: number;
+}
+
+export interface InventoryMovement {
+  id: string;
+  productId: string;
+  productName: string;
+  type: "entrada" | "salida";
+  quantity: number;
+  reason: string;
+  date: string;
 }
 
 export interface FAQItem {
