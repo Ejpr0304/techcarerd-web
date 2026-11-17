@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
-import { MessageSquare, Phone } from "lucide-react";
+import { MessageSquare, Phone, Lock } from "lucide-react";
 import { LogoIcon } from "@/components/LogoIcon";
 
 function InstagramIcon({ className }: { className?: string }) {
@@ -124,9 +124,17 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-neutral-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
           <p>&copy; {currentYear} {siteConfig.name}. Todos los derechos reservados.</p>
-          <div className="flex gap-6">
+          <div className="flex items-center gap-6">
             <span className="hover:text-neutral-400 cursor-pointer">Términos de Servicio</span>
             <span className="hover:text-neutral-400 cursor-pointer">Política de Privacidad</span>
+            <Link
+              href="/login"
+              className="hover:text-blue-400 flex items-center gap-1.5 text-neutral-500 transition-colors py-1 px-2 rounded hover:bg-neutral-900"
+              title="Portal Administrativo / Dashboard"
+            >
+              <Lock className="w-3 h-3 text-neutral-600" />
+              <span>Acceso Administrativo</span>
+            </Link>
           </div>
         </div>
       </div>

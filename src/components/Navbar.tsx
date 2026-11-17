@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Lock } from "lucide-react";
 import { LogoIcon } from "@/components/LogoIcon";
 
 export function Navbar() {
@@ -56,12 +56,19 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
+          {/* CTA & Admin Button */}
+          <div className="hidden md:flex items-center gap-3">
             <Link href="#contacto">
-              <Button className="bg-blue-600 hover:bg-blue-500 text-white font-medium px-5 rounded-lg border border-blue-500/50 shadow-[0_0_20px_rgba(37,99,235,0.2)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] transition-all duration-300">
+              <Button className="bg-blue-600 hover:bg-blue-500 text-white font-medium px-5 rounded-lg border border-blue-500/50 shadow-[0_0_20px_rgba(37,99,235,0.2)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] transition-all duration-300 cursor-pointer">
                 Cotizar Ahora
               </Button>
+            </Link>
+            <Link
+              href="/login"
+              className="p-2.5 rounded-lg bg-neutral-900/60 hover:bg-neutral-800 text-neutral-400 hover:text-white border border-neutral-800 transition-colors"
+              title="Panel Administrativo"
+            >
+              <Lock className="w-4 h-4" />
             </Link>
           </div>
 
@@ -98,11 +105,19 @@ export function Navbar() {
               {item.title}
             </Link>
           ))}
-          <div className="pt-4 px-3">
+          <div className="pt-4 px-3 space-y-2">
             <Link href="#contacto" onClick={() => setIsOpen(false)}>
-              <Button className="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg">
+              <Button className="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg cursor-pointer">
                 Cotizar Ahora
               </Button>
+            </Link>
+            <Link
+              href="/login"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg text-xs font-semibold text-neutral-400 hover:text-white bg-neutral-900/60 border border-neutral-850 hover:bg-neutral-850 transition-colors"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Acceso Administrativo</span>
             </Link>
           </div>
         </div>
