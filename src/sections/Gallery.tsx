@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { ZoomIn, Wrench, Shield, Play } from "lucide-react";
+import { Camera, ZoomIn, Eye } from "lucide-react";
 
 export function Gallery() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -11,110 +10,110 @@ export function Gallery() {
   const galleryItems = [
     {
       id: "gal-1",
-      title: "Aplicación de Metal Líquido en PS5",
-      description: "Reacondicionamiento especializado del sistema de disipación de calor oficial de Sony.",
+      title: "Metal Líquido en PS5",
+      description: "Reacondicionamiento de barrera térmica en APU de PlayStation 5.",
       image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=800&q=80",
+      pill: "bg-fuchsia-600 text-white",
+      tag: "PlayStation 5",
     },
     {
       id: "gal-2",
-      title: "Limpieza Interna de Laptop Gaming",
-      description: "Retirada total de pelusas en bloque de disipador de cobre dual.",
+      title: "Laptops Gaming & Ultrabooks",
+      description: "Limpieza de doble turbina y bloque de cobre en laptops de alto rendimiento.",
       image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80",
+      pill: "bg-sky-500 text-white",
+      tag: "Laptops",
     },
     {
       id: "gal-3",
-      title: "Ensamblado Premium de PC Gaming",
-      description: "Gestión avanzada de cableado y pruebas de flujo de aire en chasis cerrado.",
+      title: "Ensamblaje & Cable Management",
+      description: "Montaje con flujo de aire optimizado y estética minimalista para PCs.",
       image: "https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=800&q=80",
+      pill: "bg-emerald-600 text-white",
+      tag: "PC Gaming",
     },
     {
       id: "gal-4",
-      title: "Cambio de Pasta Térmica en CPU",
-      description: "Aplicación perfecta de compuesto de conductividad de nivel extremo.",
+      title: "Pastas Térmicas de Competición",
+      description: "Aplicación de compuestos Arctic MX-6 y Thermal Grizzly para reducir temperaturas.",
       image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=800&q=80",
+      pill: "bg-amber-500 text-white",
+      tag: "Rendimiento",
     },
     {
       id: "gal-5",
-      title: "Identificación y Eliminación de Malware",
-      description: "Detección profunda, limpieza y protección de sistemas contra amenazas y virus.",
+      title: "Optimización de Software & Malware",
+      description: "Eliminación de programas espía, virus y aceleración del sistema operativo.",
       image: "/malware.png",
+      pill: "bg-indigo-600 text-white",
+      tag: "Seguridad",
     },
     {
       id: "gal-6",
-      title: "Venta de Consolas, Controles y Laptops",
-      description: "Equipos gaming y accesorios de última generación garantizados.",
+      title: "Equipos & Accesorios Garantizados",
+      description: "Controles DualSense, mandos DualShock y componentes con garantía directa.",
       image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&w=800&q=80",
+      pill: "bg-rose-500 text-white",
+      tag: "Tienda Oficial",
     },
   ];
 
   return (
-    <section id="galeria" className="py-24 bg-neutral-950 relative">
+    <section id="galeria" className="py-24 sm:py-32 bg-[#F8FAFC] border-t border-slate-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-sm font-semibold tracking-widest text-blue-500 uppercase">
-            Galería de Trabajos
+        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+          <div className="inline-flex items-center gap-2 bg-slate-200/80 text-slate-800 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+            <Camera className="w-3.5 h-3.5" />
+            Galería del Taller
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
+            Nuestra Labor Diaria
           </h2>
-          <p className="mt-3 text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Nuestra labor diaria en el Taller
-          </p>
-          <p className="mt-4 text-lg text-neutral-400">
-            Documentamos los procesos de mantenimiento más rigurosos para certificar la excelencia y calidad de nuestro servicio técnico.
+          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+            Fotografías directas de nuestro banco de trabajo. Cada intervención se realiza con estándares técnicos de alta precisión.
           </p>
         </div>
 
-        {/* Gallery Grid */}
+        {/* Gallery Grid (Inspired by 'Applications' cards with pill buttons) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {galleryItems.map((item) => (
-            <Dialog key={item.id}>
-              <DialogTrigger
-                onClick={() => setSelectedImage(item.image)}
-                className="group relative cursor-pointer aspect-video md:aspect-[4/3] rounded-xl overflow-hidden border border-neutral-900 bg-neutral-900 shadow-md transition-all duration-300 hover:shadow-[0_0_20px_rgba(37,99,235,0.2)] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 w-full"
-              >
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  priority={false}
-                />
+            <div
+              key={item.id}
+              className="group relative rounded-3xl overflow-hidden bg-slate-900 h-[360px] sm:h-[400px] shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-200/80 flex flex-col justify-end p-6 sm:p-8"
+            >
+              {/* Image */}
+              <Image
+                src={item.image}
+                alt={item.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
+              />
 
-                {/* Overlay on hover */}
-                <div className="absolute inset-0 bg-neutral-950/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                  <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-blue-600/90 text-white flex items-center justify-center shadow-lg transition-transform duration-300 scale-90 group-hover:scale-100">
-                    <ZoomIn className="w-4 h-4" />
-                  </div>
-                  <h3 className="text-lg font-bold text-white translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent pointer-events-none" />
+
+              {/* Pill Tag overlay (Matches reference image) */}
+              <div className="relative z-10 flex flex-col items-start gap-3">
+                <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md ${item.pill}`}>
+                  {item.tag}
+                </span>
+
+                <div>
+                  <h3 className="text-xl font-bold text-white tracking-tight leading-snug">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-neutral-300 mt-1.5 translate-y-2 group-hover:translate-y-0 transition-transform duration-300 delay-75">
+                  <p className="mt-1 text-xs text-slate-300 leading-relaxed line-clamp-2">
                     {item.description}
                   </p>
                 </div>
-              </DialogTrigger>
-
-              {/* Lightbox / Zoom Modal */}
-              <DialogContent className="max-w-4xl p-0 overflow-hidden bg-neutral-950 border-neutral-900">
-                {selectedImage && (
-                  <div className="relative aspect-video w-full">
-                    <Image
-                      src={selectedImage}
-                      alt={item.title}
-                      fill
-                      sizes="90vw"
-                      className="object-contain"
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black to-transparent text-white">
-                      <h3 className="text-xl font-bold">{item.title}</h3>
-                      <p className="text-sm text-neutral-300 mt-1">{item.description}</p>
-                    </div>
-                  </div>
-                )}
-              </DialogContent>
-            </Dialog>
+              </div>
+            </div>
           ))}
         </div>
+
       </div>
     </section>
   );

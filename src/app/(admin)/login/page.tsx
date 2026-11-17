@@ -41,16 +41,14 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // Simular latencia de autenticación de 1 segundo
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 800));
       
-      // En desarrollo simulamos un login administrativo
       if (data.email === "admin@techcare.com.do" && data.password === "admin123") {
         router.push("/dashboard");
       } else {
-        setError("Credenciales de demostración incorrectas. Utiliza admin@techcare.com.do y admin123");
+        setError("Credenciales incorrectas. Utiliza admin@techcare.com.do y admin123");
       }
-    } catch (err) {
+    } catch {
       setError("Error de autenticación. Inténtalo de nuevo.");
     } finally {
       setLoading(false);
@@ -58,41 +56,41 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center p-4 font-sans text-neutral-200">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-4 font-sans text-slate-900">
       {/* Back button */}
       <Link
         href="/"
-        className="absolute top-6 left-6 inline-flex items-center gap-2 text-sm text-neutral-400 hover:text-white transition-colors"
+        className="absolute top-6 left-6 inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
-        Volver al sitio
+        Volver a la tienda pública
       </Link>
 
-      <Card className="w-full max-w-md bg-neutral-900/40 border-neutral-900 shadow-2xl p-6 backdrop-blur-md">
+      <Card className="w-full max-w-md bg-white border-slate-200 shadow-2xl p-6 sm:p-8 rounded-3xl">
         <CardHeader className="text-center pb-4">
-          <div className="mx-auto w-12 h-12 rounded-xl bg-blue-600/10 border border-blue-500/20 text-blue-500 flex items-center justify-center mb-4">
-            <Shield className="w-6 h-6" />
+          <div className="mx-auto w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center mb-4 shadow-sm font-black text-sm">
+            TC
           </div>
-          <CardTitle className="text-2xl font-extrabold text-white">Portal Administrativo</CardTitle>
-          <CardDescription className="text-neutral-500 mt-1">
-            Ingresa tus credenciales para acceder a la gestión de TechCareRD.
+          <CardTitle className="text-2xl font-black text-slate-900 tracking-tight">Portal Administrativo</CardTitle>
+          <CardDescription className="text-slate-500 text-xs mt-1">
+            Ingresa tus credenciales para acceder a la gestión de inventario y taller.
           </CardDescription>
         </CardHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
             {/* Email */}
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-semibold text-neutral-300">
+            <div className="space-y-1.5">
+              <Label htmlFor="email" className="text-xs font-semibold text-slate-700">
                 Correo Electrónico
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-600" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="admin@techcare.com.do"
-                  className="h-11 bg-neutral-950 border-neutral-800 text-white pl-10 focus:border-blue-500 focus:ring-blue-500/20"
+                  className="h-11 bg-slate-50 border-slate-200 text-slate-900 pl-10 text-xs rounded-xl focus:border-blue-500"
                   {...register("email")}
                 />
               </div>
@@ -105,22 +103,19 @@ export default function LoginPage() {
             </div>
 
             {/* Password */}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <div className="flex justify-between items-center">
-                <Label htmlFor="password" className="text-sm font-semibold text-neutral-300">
+                <Label htmlFor="password" className="text-xs font-semibold text-slate-700">
                   Contraseña
                 </Label>
-                <span className="text-xs text-blue-500 hover:text-blue-400 cursor-pointer">
-                  ¿Olvidaste tu contraseña?
-                </span>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-600" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
                   id="password"
                   type="password"
                   placeholder="••••••••"
-                  className="h-11 bg-neutral-950 border-neutral-800 text-white pl-10 focus:border-blue-500 focus:ring-blue-500/20"
+                  className="h-11 bg-slate-50 border-slate-200 text-slate-900 pl-10 text-xs rounded-xl focus:border-blue-500"
                   {...register("password")}
                 />
               </div>
@@ -132,27 +127,27 @@ export default function LoginPage() {
               )}
             </div>
 
+            {/* Global Error Banner */}
             {error && (
-              <div className="p-3 bg-red-950/80 border border-red-500/30 text-red-400 rounded-lg flex items-start gap-2 text-xs">
-                <AlertCircle className="w-4.5 h-4.5 shrink-0 mt-0.5" />
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
                 <span>{error}</span>
               </div>
             )}
           </CardContent>
 
-          <CardFooter className="pt-4 flex flex-col gap-4">
+          <CardFooter className="flex flex-col gap-3 pt-2">
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-6 rounded-lg transition-all duration-300 cursor-pointer shadow-md"
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs h-11 rounded-full cursor-pointer shadow-md transition-all"
             >
-              {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
+              {loading ? "Verificando acceso..." : "Iniciar Sesión"}
             </Button>
             
-            <div className="text-center text-xs text-neutral-500 mt-2">
-              <p>Credenciales de demo:</p>
-              <p className="font-mono text-neutral-400 mt-0.5">admin@techcare.com.do / admin123</p>
-            </div>
+            <p className="text-[11px] text-center text-slate-400">
+              TechCareRD Lab Management System
+            </p>
           </CardFooter>
         </form>
       </Card>

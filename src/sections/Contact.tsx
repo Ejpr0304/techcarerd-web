@@ -10,27 +10,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Phone, Mail, Send, CheckCircle2, AlertCircle } from "lucide-react";
+import { Phone, Mail, Send, CheckCircle2, AlertCircle, MessageSquare, MapPin, Clock } from "lucide-react";
 
-// Esquema de validación estricto con Zod
 const contactSchema = z.object({
-  name: z
-    .string()
-    .min(2, { message: "El nombre debe tener al menos 2 caracteres." })
-    .max(100, { message: "El nombre no puede exceder los 100 caracteres." }),
-  phone: z
-    .string()
-    .min(8, { message: "El número de teléfono debe ser válido (mínimo 8 dígitos)." }),
-  email: z
-    .string()
-    .email({ message: "Por favor, introduce un correo electrónico válido." })
-    .or(z.literal("")), // Permite campo vacío
+  name: z.string().min(2, { message: "El nombre debe tener al menos 2 caracteres." }).max(100),
+  phone: z.string().min(8, { message: "Introduce un número de contacto válido." }),
+  email: z.string().email().or(z.literal("")),
   deviceType: z.string().min(1, { message: "Por favor, selecciona tu equipo." }),
   serviceType: z.string().min(1, { message: "Por favor, selecciona el servicio." }),
-  message: z
-    .string()
-    .min(10, { message: "El mensaje debe detallar tu problema (mínimo 10 caracteres)." })
-    .max(1000, { message: "El mensaje no puede exceder los 1000 caracteres." }),
+  message: z.string().min(10, { message: "Cuéntanos brevemente el problema (mínimo 10 caracteres)." }),
 });
 
 type ContactFormValues = z.infer<typeof contactSchema>;
@@ -63,254 +51,213 @@ export function Contact() {
     setErrorMessage("");
 
     try {
-      const response = await submitContactMessage(data);
-      if (response.success) {
+      const result = await submitContactMessage(data);
+      if (result.success) {
         setSubmitStatus("success");
         reset();
       } else {
         setSubmitStatus("error");
-        setErrorMessage(response.error || "Hubo un problema al enviar tu solicitud.");
+        setErrorMessage(result.error || "Ocurrió un error al enviar el mensaje.");
       }
-    } catch (err) {
+    } catch {
       setSubmitStatus("error");
-      setErrorMessage("Error de conexión. Inténtalo de nuevo más tarde.");
+      setErrorMessage("No se pudo conectar con el servidor. Inténtalo por WhatsApp.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <section id="contacto" className="py-24 bg-neutral-900/30 border-t border-neutral-900 relative">
+    <section id="contacto" className="py-24 sm:py-32 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-          
-          {/* Contact Details (Left Column) */}
-          <div className="lg:col-span-5 flex flex-col justify-between h-full">
-            <div>
-              <h2 className="text-sm font-semibold tracking-widest text-blue-500 uppercase">
-                Contáctanos
-              </h2>
-              <p className="mt-3 text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                Agenda tu Mantenimiento Técnico
-              </p>
-              <p className="mt-4 text-lg text-neutral-400 leading-relaxed">
-                ¿Tu equipo se apaga solo, va lento o calienta demasiado? Escríbenos para recibir un diagnóstico previo y cotización sin compromiso.
-              </p>
+        
+        {/* Header */}
+        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+          <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+            <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+            Canales de Atención
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
+            Agenda tu Diagnóstico Técnico
+          </h2>
+          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+            Escríbenos directamente o llena el formulario para recibir una cotización estimada y apartar turno para tu equipo en el taller.
+          </p>
+        </div>
 
-              {/* Direct Info List */}
-              <div className="mt-12 space-y-6">
-                <div className="flex gap-4">
-                  <div className="w-11 h-11 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-500 flex items-center justify-center shrink-0">
-                    <Phone className="w-5 h-5" />
+        {/* 2-Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          
+          {/* Left Info Column */}
+          <div className="lg:col-span-5 space-y-8">
+            <div className="bg-[#F8FAFC] rounded-3xl p-8 border border-slate-200/90 shadow-sm space-y-6">
+              <h3 className="text-xl font-bold text-slate-900">
+                Información del Taller
+              </h3>
+
+              <div className="space-y-4 text-sm text-slate-600">
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <Phone className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-white uppercase tracking-wider">Llámanos o escríbenos</h4>
-                    <a
-                      href={siteConfig.contact.whatsappLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-neutral-400 hover:text-blue-400 text-sm mt-1 block font-medium transition-colors"
-                    >
+                    <span className="block font-semibold text-slate-900">Teléfono & WhatsApp</span>
+                    <a href={`tel:${siteConfig.contact.phoneValue}`} className="hover:text-blue-600 font-medium">
                       {siteConfig.contact.phone}
                     </a>
                   </div>
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="w-11 h-11 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-500 flex items-center justify-center shrink-0">
-                    <Mail className="w-5 h-5" />
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <MapPin className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-white uppercase tracking-wider">Correo Electrónico</h4>
-                    <span className="text-neutral-400 text-sm mt-1 block">
-                      {siteConfig.contact.email}
-                    </span>
+                    <span className="block font-semibold text-slate-900">Ubicación</span>
+                    <span>{siteConfig.contact.address}</span>
                   </div>
                 </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <Clock className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="block font-semibold text-slate-900">Horario de Atención</span>
+                    <span>{siteConfig.openingHours.weekdays}</span>
+                    <span className="block text-xs text-slate-500">{siteConfig.openingHours.saturdays}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Direct WhatsApp CTA Button */}
+              <div className="pt-2">
+                <a
+                  href={siteConfig.contact.whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full block"
+                >
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-5 rounded-full shadow-lg shadow-emerald-500/20 gap-2 cursor-pointer">
+                    <MessageSquare className="w-4 h-4" />
+                    Chatear por WhatsApp Ahora
+                  </Button>
+                </a>
               </div>
             </div>
           </div>
 
-          {/* Form Card (Right Column) */}
-          <div className="lg:col-span-7 bg-neutral-950/60 border border-neutral-900 rounded-2xl p-8 backdrop-blur-md shadow-2xl">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* Nombre */}
-                <div className="space-y-2">
-                  <Label htmlFor="name" className="text-sm font-semibold text-neutral-300">
-                    Nombre Completo <span className="text-blue-500">*</span>
-                  </Label>
+          {/* Right Form Column */}
+          <div className="lg:col-span-7 bg-white rounded-3xl p-8 sm:p-10 border border-slate-200 shadow-xl">
+            <h3 className="text-xl font-bold text-slate-900 mb-2">
+              Envíanos un Mensaje
+            </h3>
+            <p className="text-xs text-slate-500 mb-6">
+              Te responderemos en menos de 2 horas en horario laboral.
+            </p>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="name" className="text-xs font-semibold text-slate-700">Tu Nombre Completo</Label>
                   <Input
                     id="name"
-                    type="text"
                     placeholder="Ej. Juan Pérez"
-                    className="h-11 bg-neutral-950 border-neutral-800 text-white rounded-lg focus:border-blue-500 focus:ring-blue-500/20 placeholder:text-neutral-600"
+                    className="mt-1 bg-slate-50 border-slate-200 text-slate-900 text-xs h-11 rounded-xl"
                     {...register("name")}
                   />
-                  {errors.name && (
-                    <p className="text-xs text-red-500 font-medium flex items-center gap-1">
-                      <AlertCircle className="w-3.5 h-3.5" />
-                      {errors.name.message}
-                    </p>
-                  )}
+                  {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
                 </div>
 
-                {/* WhatsApp/Teléfono */}
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-sm font-semibold text-neutral-300">
-                    WhatsApp o Teléfono <span className="text-blue-500">*</span>
-                  </Label>
+                <div>
+                  <Label htmlFor="phone" className="text-xs font-semibold text-slate-700">Teléfono (WhatsApp)</Label>
                   <Input
                     id="phone"
-                    type="tel"
-                    placeholder="Ej. 809-555-5555"
-                    className="h-11 bg-neutral-950 border-neutral-800 text-white rounded-lg focus:border-blue-500 focus:ring-blue-500/20 placeholder:text-neutral-600"
+                    placeholder="Ej. 809-000-0000"
+                    className="mt-1 bg-slate-50 border-slate-200 text-slate-900 text-xs h-11 rounded-xl"
                     {...register("phone")}
                   />
-                  {errors.phone && (
-                    <p className="text-xs text-red-500 font-medium flex items-center gap-1">
-                      <AlertCircle className="w-3.5 h-3.5" />
-                      {errors.phone.message}
-                    </p>
-                  )}
+                  {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone.message}</p>}
                 </div>
               </div>
 
-              {/* Correo */}
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-semibold text-neutral-300">
-                  Correo Electrónico <span className="text-neutral-500">(Opcional)</span>
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="ejemplo@correo.com"
-                  className="h-11 bg-neutral-950 border-neutral-800 text-white rounded-lg focus:border-blue-500 focus:ring-blue-500/20 placeholder:text-neutral-600"
-                  {...register("email")}
-                />
-                {errors.email && (
-                  <p className="text-xs text-red-500 font-medium flex items-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* Tipo de Equipo */}
-                <div className="space-y-2">
-                  <Label htmlFor="deviceType" className="text-sm font-semibold text-neutral-300">
-                    Tipo de Equipo <span className="text-blue-500">*</span>
-                  </Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="deviceType" className="text-xs font-semibold text-slate-700">Tipo de Equipo</Label>
                   <select
                     id="deviceType"
-                    className="flex h-11 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-200 focus:outline-none focus:border-blue-500 focus:ring-blue-500/20 cursor-pointer"
+                    className="mt-1 w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs h-11 rounded-xl px-3 outline-none"
                     {...register("deviceType")}
                   >
-                    <option value="">Seleccionar...</option>
-                    <option value="Laptop">Laptop / Macbook</option>
-                    <option value="PC Escritorio">PC de Escritorio</option>
+                    <option value="">Selecciona tu equipo...</option>
                     <option value="PlayStation 5">PlayStation 5</option>
                     <option value="PlayStation 4">PlayStation 4</option>
-                    <option value="Xbox">Xbox Series / One</option>
+                    <option value="Xbox Series / One">Xbox Series / One</option>
+                    <option value="Laptop Gaming">Laptop Gaming (ASUS/MSI/Alienware)</option>
+                    <option value="Laptop Oficina / MacBook">Laptop Oficina / MacBook</option>
+                    <option value="PC de Escritorio">PC de Escritorio / Gaming Rig</option>
                     <option value="Otro">Otro Dispositivo</option>
                   </select>
-                  {errors.deviceType && (
-                    <p className="text-xs text-red-500 font-medium flex items-center gap-1">
-                      <AlertCircle className="w-3.5 h-3.5" />
-                      {errors.deviceType.message}
-                    </p>
-                  )}
+                  {errors.deviceType && <p className="text-xs text-red-500 mt-1">{errors.deviceType.message}</p>}
                 </div>
 
-                {/* Tipo de Servicio */}
-                <div className="space-y-2">
-                  <Label htmlFor="serviceType" className="text-sm font-semibold text-neutral-300">
-                    Servicio Requerido <span className="text-blue-500">*</span>
-                  </Label>
+                <div>
+                  <Label htmlFor="serviceType" className="text-xs font-semibold text-slate-700">Servicio Requerido</Label>
                   <select
                     id="serviceType"
-                    className="flex h-11 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-200 focus:outline-none focus:border-blue-500 focus:ring-blue-500/20 cursor-pointer"
+                    className="mt-1 w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs h-11 rounded-xl px-3 outline-none"
                     {...register("serviceType")}
                   >
-                    <option value="">Seleccionar...</option>
-                    <option value="Mantenimiento Completo">Mantenimiento Completo</option>
-                    <option value="Cambio de Pasta Térmica">Cambio de Pasta Térmica</option>
-                    <option value="Cambio de Metal Líquido">Cambio de Metal Líquido</option>
-                    <option value="Upgrade de RAM / SSD">Upgrade de RAM / SSD</option>
-                    <option value="Diagnóstico Técnico">Diagnóstico Técnico</option>
-                    <option value="Otro">Otro Servicio</option>
+                    <option value="">Selecciona el servicio...</option>
+                    <option value="Mantenimiento Preventivo / Ruido">Mantenimiento Preventivo (Limpieza & Ruido)</option>
+                    <option value="Reacondicionamiento Metal Líquido">Reacondicionamiento Metal Líquido (PS5)</option>
+                    <option value="Cambio de Pasta Térmica">Cambio de Pasta Térmica (CPU / GPU)</option>
+                    <option value="Instalación / Upgrade SSD">Instalación / Upgrade de SSD</option>
+                    <option value="Ampliación de RAM">Ampliación de Memoria RAM</option>
+                    <option value="Diagnóstico General">Diagnóstico General por Falla</option>
                   </select>
-                  {errors.serviceType && (
-                    <p className="text-xs text-red-500 font-medium flex items-center gap-1">
-                      <AlertCircle className="w-3.5 h-3.5" />
-                      {errors.serviceType.message}
-                    </p>
-                  )}
+                  {errors.serviceType && <p className="text-xs text-red-500 mt-1">{errors.serviceType.message}</p>}
                 </div>
               </div>
 
-              {/* Mensaje */}
-              <div className="space-y-2">
-                <Label htmlFor="message" className="text-sm font-semibold text-neutral-300">
-                  Describe los síntomas de tu equipo <span className="text-blue-500">*</span>
-                </Label>
+              <div>
+                <Label htmlFor="message" className="text-xs font-semibold text-slate-700">Detalles del Problema o Consulta</Label>
                 <Textarea
                   id="message"
-                  placeholder="Detalla qué problemas presenta el equipo (ej. Se apaga a los 10 min de juego, hace ruido extraño el abanico, etc.)"
-                  className="min-h-[120px] bg-neutral-950 border-neutral-800 text-white rounded-lg focus:border-blue-500 focus:ring-blue-500/20 placeholder:text-neutral-600 resize-y"
+                  rows={3}
+                  placeholder="Describe qué le pasa a tu equipo (se apaga, suena fuerte, se calienta, lentitud, etc.)..."
+                  className="mt-1 bg-slate-50 border-slate-200 text-slate-900 text-xs rounded-xl"
                   {...register("message")}
                 />
-                {errors.message && (
-                  <p className="text-xs text-red-500 font-medium flex items-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                    {errors.message.message}
-                  </p>
-                )}
+                {errors.message && <p className="text-xs text-red-500 mt-1">{errors.message.message}</p>}
               </div>
 
-              {/* Alert Status messages */}
               {submitStatus === "success" && (
-                <div className="p-4 bg-green-950/80 border border-green-500/30 text-green-400 rounded-lg flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
-                  <div>
-                    <h5 className="font-bold text-sm">¡Solicitud recibida!</h5>
-                    <p className="text-xs mt-1 text-green-300">
-                      Hemos recibido tus datos con éxito. En breve nos pondremos en contacto contigo vía WhatsApp para coordinar la entrega o cotización.
-                    </p>
-                  </div>
+                <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span>¡Mensaje recibido con éxito! Nos pondremos en contacto contigo de inmediato.</span>
                 </div>
               )}
 
               {submitStatus === "error" && (
-                <div className="p-4 bg-red-950/80 border border-red-500/30 text-red-400 rounded-lg flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-                  <div>
-                    <h5 className="font-bold text-sm">Error en el envío</h5>
-                    <p className="text-xs mt-1 text-red-300">{errorMessage}</p>
-                  </div>
+                <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-red-600" />
+                  <span>{errorMessage}</span>
                 </div>
               )}
 
-              {/* Submit Button */}
               <Button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-6 rounded-lg shadow-[0_0_20px_rgba(37,99,235,0.2)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] transition-all duration-300 gap-2 cursor-pointer"
                 disabled={isSubmitting}
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-5 rounded-full shadow-md cursor-pointer transition-all"
               >
-                {isSubmitting ? (
-                  <>Enviando solicitud...</>
-                ) : (
-                  <>
-                    Enviar Solicitud
-                    <Send className="w-4 h-4" />
-                  </>
-                )}
+                {isSubmitting ? "Enviando Solicitud..." : "Enviar Solicitud de Diagnóstico"}
+                <Send className="w-3.5 h-3.5 ml-2" />
               </Button>
             </form>
           </div>
         </div>
+
       </div>
     </section>
   );

@@ -1,144 +1,164 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { siteConfig } from "@/config/site";
 
 export function Prices() {
   const categories = [
     {
       title: "Consolas de Videojuegos",
-      description: "Mantenimiento especializado para Playstation y Xbox.",
+      description: "Mantenimiento preventivo y correctivo especializado para Playstation y Xbox.",
       price: "1,000",
       priceLabel: "Desde RD$",
       popular: false,
+      badge: "Consolas",
       features: [
-        "PS5: Premium: RD$ 2,500 | Premium+ Metal Líquido: RD$ 2,900",
+        "PS5: Premium: RD$ 2,500 | Metal Líquido: RD$ 2,900",
         "PS4: Full: RD$ 1,000 | Premium: RD$ 1,500",
-        "Xbox One/Series: Full: RD$ 1,500 | Premium: RD$ 2,500",
-        "Limpieza total de disipador y ventilador",
-        "Cambio de pasta térmica de alta calidad",
-        "Reacondicionamiento de metal líquido (PS5)",
+        "Xbox One / Series: Full: RD$ 1,500 | Premium: RD$ 2,500",
+        "Desensamble cuidadoso y limpieza de fuente",
+        "Cambio de pasta térmica de alta conductividad",
+        "Restauración de metal líquido en APU (PS5)",
         "Diagnóstico de temperaturas post-servicio",
       ],
       cta: "Cotizar Consola",
     },
     {
       title: "Computadoras & Laptops",
-      description: "Optimización de temperatura y rendimiento para tu PC.",
+      description: "Optimización de temperatura y rendimiento para tu equipo de trabajo o gaming.",
       price: "1,000",
       priceLabel: "Desde RD$",
       popular: true,
+      badge: "Más Solicitado",
       features: [
         "Laptops: Básico: RD$ 1,000 | Full: RD$ 1,500 | Premium: RD$ 2,500",
-        "PC: Básico: RD$ 1,300 | Full: RD$ 1,900",
-        "PC: Premium: RD$ 3,000 | Premium+ Gaming: RD$ 4,000",
-        "Cambio de pasta térmica premium (Arctic/Thermal Grizzly)",
-        "Limpieza profunda de componentes y ventiladores",
-        "Ordenamiento de cableado y flujo de aire",
-        "Pruebas de estrés y control de temperaturas",
+        "PC: Básico: RD$ 1,300 | Full: RD$ 1,900 | Gaming: RD$ 4,000",
+        "Pastas térmicas Arctic MX-6 / Thermal Grizzly",
+        "Limpieza profunda de disipadores y ventiladores",
+        "Ordenamiento de cableado interno (airflow)",
+        "Test de estabilidad y temperaturas bajo estrés",
+        "Garantía directa en taller TechCareRD",
       ],
       cta: "Cotizar Computadora",
     },
     {
       title: "Upgrades & Diagnósticos",
-      description: "Aumenta la velocidad y almacenamiento de tus equipos.",
+      description: "Aumenta la velocidad y almacenamiento con repuestos originales.",
       price: "500",
       priceLabel: "Desde RD$",
       popular: false,
+      badge: "Repuestos & Upgrades",
       features: [
         "Diagnóstico técnico completo: RD$ 500",
-        "Upgrade de Memoria RAM: RD$ 800",
-        "Instalación de SSD (SATA / M.2 NVMe): RD$ 1,200",
-        "Clonación de sistema operativo o instalación limpia",
-        "Pruebas de rendimiento del hardware",
-        "Asesoramiento técnico para repuestos",
-        "Garantía de instalación",
+        "Upgrade de Memoria RAM SODIMM: RD$ 800",
+        "Instalación de SSD (SATA / NVMe M.2): RD$ 1,200",
+        "Clonación de disco o instalación limpia de SO",
+        "Pruebas de salud SMART de disco duro",
+        "Asesoramiento técnico personalizado",
+        "Soporte post-instalación",
       ],
       cta: "Cotizar Upgrade",
     },
   ];
 
   return (
-    <section id="precios" className="py-24 bg-neutral-900/30 border-y border-neutral-900 relative">
+    <section id="precios" className="py-24 sm:py-32 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-sm font-semibold tracking-widest text-blue-500 uppercase">
+        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+          <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
             Transparencia Total
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
+            Tarifas Claras y Cerradas
           </h2>
-          <p className="mt-3 text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Tarifas de Referencia para Servicios
-          </p>
-          <p className="mt-4 text-lg text-neutral-400">
-            Ofrecemos precios competitivos y cerrados desde el inicio. Sin cargos ocultos ni sorpresas en tu presupuesto.
+          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+            Sin costos ocultos ni sorpresas en tu presupuesto. Todos los trabajos incluyen garantía escrita del taller.
           </p>
         </div>
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-          {categories.map((category, index) => (
-            <motion.div
-              key={category.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ delay: index * 0.1, type: "spring", stiffness: 100, damping: 15 }}
-              className="flex"
+          {categories.map((cat, idx) => (
+            <div
+              key={idx}
+              className={`flex flex-col justify-between rounded-3xl p-8 sm:p-10 transition-all duration-300 ${
+                cat.popular
+                  ? "bg-white border-2 border-blue-600 shadow-2xl relative lg:-translate-y-2"
+                  : "bg-[#F8FAFC] border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300"
+              }`}
             >
-              <div
-                className={`relative flex flex-col justify-between w-full rounded-2xl p-8 backdrop-blur-md transition-all duration-300 ${
-                  category.popular
-                    ? "bg-neutral-950 border-2 border-blue-500 shadow-[0_0_30px_rgba(37,99,235,0.15)] scale-100 lg:scale-105 z-10"
-                    : "bg-neutral-950/50 border border-neutral-900 hover:border-neutral-800 shadow-lg"
-                }`}
-              >
-                {category.popular && (
-                  <span className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white text-xs font-bold uppercase tracking-wider px-3.5 py-1 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.5)]">
-                    Más Recomendado
+              <div>
+                {/* Badge */}
+                <div className="flex items-center justify-between mb-6">
+                  <span
+                    className={`text-[11px] font-bold tracking-wider uppercase px-3.5 py-1 rounded-full ${
+                      cat.popular
+                        ? "bg-blue-600 text-white shadow-sm"
+                        : "bg-slate-200/80 text-slate-700"
+                    }`}
+                  >
+                    {cat.badge}
                   </span>
-                )}
-
-                <div>
-                  <h3 className="text-xl font-bold text-white">{category.title}</h3>
-                  <p className="text-sm text-neutral-400 mt-2 min-h-[40px]">
-                    {category.description}
-                  </p>
-
-                  <div className="mt-6 flex items-baseline gap-1 text-white">
-                    <span className="text-sm font-semibold text-neutral-500">{category.priceLabel}</span>
-                    <span className="text-4xl font-extrabold tracking-tight">{category.price}</span>
-                    <span className="text-sm text-neutral-500">/servicio</span>
-                  </div>
-
-                  <ul className="mt-8 space-y-4 border-t border-neutral-900 pt-6">
-                    {category.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-3">
-                        <Check className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-                        <span className="text-sm text-neutral-300">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
 
-                <div className="mt-8 pt-6">
-                  <a href="#contacto" className="w-full block">
-                    <Button
-                      className={`w-full py-6 rounded-xl font-semibold text-sm transition-all duration-300 gap-2 ${
-                        category.popular
-                          ? "bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)]"
-                          : "bg-neutral-900 hover:bg-neutral-850 text-neutral-200 border border-neutral-800"
-                      }`}
-                    >
-                      {category.cta}
-                      <ArrowRight className="w-4 h-4" />
-                    </Button>
-                  </a>
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                  {cat.title}
+                </h3>
+                <p className="mt-2 text-sm text-slate-600 leading-relaxed min-h-[40px]">
+                  {cat.description}
+                </p>
+
+                {/* Price Display */}
+                <div className="my-8 pb-6 border-b border-slate-200 flex items-baseline gap-2">
+                  <span className="text-xs font-semibold text-slate-500 uppercase">
+                    {cat.priceLabel}
+                  </span>
+                  <span className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">
+                    {cat.price}
+                  </span>
                 </div>
+
+                {/* Features list */}
+                <ul className="space-y-3.5 text-xs sm:text-sm text-slate-600 mb-8">
+                  {cat.features.map((feat, fIdx) => (
+                    <li key={fIdx} className="flex items-start gap-3">
+                      <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
+                        <Check className="w-3.5 h-3.5 text-emerald-600 font-bold" />
+                      </div>
+                      <span className="leading-snug">{feat}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </motion.div>
+
+              {/* CTA Button */}
+              <a
+                href={`${siteConfig.contact.whatsappLink}?text=${encodeURIComponent(
+                  `Hola TechCareRD, me gustaría cotizar el servicio para: ${cat.title}`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full pt-4"
+              >
+                <Button
+                  className={`w-full font-bold text-xs py-6 rounded-full cursor-pointer transition-all ${
+                    cat.popular
+                      ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20"
+                      : "bg-slate-900 hover:bg-slate-800 text-white"
+                  }`}
+                >
+                  {cat.cta}
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </a>
+            </div>
           ))}
         </div>
+
       </div>
     </section>
   );

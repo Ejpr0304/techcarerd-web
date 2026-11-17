@@ -1,8 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Star, Quote, CheckCircle2 } from "lucide-react";
 
 interface Review {
   id: string;
@@ -50,65 +48,54 @@ export function Reviews() {
   ];
 
   return (
-    <section id="reseñas" className="py-24 bg-neutral-950 relative">
+    <section id="reseñas" className="py-24 sm:py-32 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-sm font-semibold tracking-widest text-blue-500 uppercase">
-            Opiniones de Clientes
+        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+          <div className="inline-flex items-center gap-2 bg-amber-50 text-amber-800 border border-amber-200 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+            5.0 Estrellas en Google & WhatsApp
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
+            Lo que Dicen Nuestros Clientes
           </h2>
-          <p className="mt-3 text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Nuestra mayor garantía es tu satisfacción
-          </p>
-          <p className="mt-4 text-lg text-neutral-400">
-            Descubre por qué los apasionados de la tecnología y los videojuegos en Santo Domingo confían sus equipos a TechCareRD.
+          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+            La satisfacción y el cuidado de cada equipo son nuestra mejor carta de presentación en toda la República Dominicana.
           </p>
         </div>
 
-        {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {reviews.map((review, index) => (
-            <motion.div
-              key={review.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ delay: index * 0.1, type: "spring", stiffness: 100, damping: 15 }}
+        {/* Reviews Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {reviews.map((rev) => (
+            <div
+              key={rev.id}
+              className="bg-[#F8FAFC] rounded-3xl p-7 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
             >
-              <Card className="h-full bg-neutral-900/20 border-neutral-900 hover:border-neutral-800 hover:bg-neutral-900/30 transition-all duration-300 relative overflow-hidden group">
-                <CardContent className="p-8">
-                  {/* Quote icon watermark */}
-                  <Quote className="absolute right-6 top-6 w-12 h-12 text-blue-500/5 group-hover:text-blue-500/10 transition-colors" />
+              <div>
+                {/* Stars */}
+                <div className="flex items-center gap-1 mb-4 text-amber-500">
+                  {Array.from({ length: rev.rating }).map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
 
-                  {/* Rating Stars */}
-                  <div className="flex gap-1 text-amber-500 mb-5">
-                    {Array.from({ length: review.rating }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
-                    ))}
-                  </div>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic mb-6">
+                  "{rev.comment}"
+                </p>
+              </div>
 
-                  {/* Comment */}
-                  <p className="text-neutral-300 text-sm sm:text-base leading-relaxed italic mb-6">
-                    &ldquo;{review.comment}&rdquo;
-                  </p>
-
-                  {/* User Profile */}
-                  <div className="flex items-center gap-4 pt-4 border-t border-neutral-900">
-                    <div className="w-10 h-10 rounded-full bg-blue-600/10 border border-blue-500/20 text-blue-400 font-bold text-sm flex items-center justify-center">
-                      {review.name.split(" ").map(n => n[0]).join("")}
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-white">{review.name}</h4>
-                      <p className="text-xs text-neutral-500 mt-0.5">
-                        {review.deviceType} • {review.date}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+              <div className="pt-4 border-t border-slate-200/80">
+                <h4 className="font-bold text-slate-900 text-sm">{rev.name}</h4>
+                <div className="flex items-center justify-between text-[11px] text-slate-500 mt-1">
+                  <span className="font-semibold text-blue-600">{rev.deviceType}</span>
+                  <span>{rev.date}</span>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
+
       </div>
     </section>
   );

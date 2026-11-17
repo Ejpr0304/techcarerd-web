@@ -3,11 +3,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { getProducts } from "@/services/products";
-import { Product, ProductCategory } from "@/types";
+import { Product } from "@/types";
 import { siteConfig } from "@/config/site";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, RefreshCw } from "lucide-react";
+import { MessageSquare, ShoppingBag, CheckCircle, Tag } from "lucide-react";
 
 export function Products() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -32,44 +31,46 @@ export function Products() {
   }, [activeCategory]);
 
   const categories = [
-    { value: "todos", label: "Todos" },
-    { value: "consolas", label: "Consolas" },
+    { value: "todos", label: "Todos los Artículos" },
     { value: "laptops", label: "Laptops" },
-    { value: "componentes", label: "Componentes" },
-    { value: "accesorios", label: "Accesorios" },
+    { value: "consolas", label: "Consolas" },
+    { value: "componentes", label: "Componentes (SSD/RAM/HDD)" },
+    { value: "accesorios", label: "Accesorios (Controles)" },
   ];
 
   const getWhatsAppMessage = (productName: string) => {
-    const baseMsg = `Hola TechCareRD, estoy interesado en el producto: ${productName}. ¿Está disponible en tienda?`;
+    const baseMsg = `Hola TechCareRD, estoy interesado en el artículo: ${productName}. ¿Aún está disponible en tienda para entrega?`;
     return `${siteConfig.contact.whatsappLink}?text=${encodeURIComponent(baseMsg)}`;
   };
 
   return (
-    <section id="productos" className="py-24 bg-neutral-950 relative">
+    <section id="productos" className="py-24 sm:py-32 bg-[#F8FAFC] border-t border-slate-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-sm font-semibold tracking-widest text-blue-500 uppercase">
-            Tienda Física
+        <div className="text-center max-w-3xl mx-auto mb-14">
+          <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+            <ShoppingBag className="w-3.5 h-3.5 text-emerald-600" />
+            Catálogo & Tienda Física
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
+            Equipos y Repuestos Disponibles
           </h2>
-          <p className="mt-3 text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Productos y Componentes Disponibles
-          </p>
-          <p className="mt-4 text-lg text-neutral-400">
-            Equipos seleccionados y repuestos originales con garantía directa de nuestro taller.
+          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+            Consolas, laptops y componentes 100% probados en banco de trabajo con garantía directa de nuestro taller en Santo Domingo.
           </p>
         </div>
 
-        {/* Category Filters */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
+        {/* Category Pills Filters (Clean Modern Capsule Bar) */}
+        <div className="flex flex-wrap justify-center gap-2.5 mb-14">
           {categories.map((cat) => (
             <button
               key={cat.value}
               onClick={() => setActiveCategory(cat.value)}
-              className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
+              className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer ${
                 activeCategory === cat.value
-                  ? "bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]"
-                  : "bg-neutral-900 text-neutral-400 hover:bg-neutral-850 hover:text-white border border-neutral-900"
+                  ? "bg-slate-900 text-white shadow-md scale-105"
+                  : "bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/80"
               }`}
             >
               {cat.label}
@@ -79,117 +80,125 @@ export function Products() {
 
         {/* Products Grid */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 4 }).map((_, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
+            {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="h-96 rounded-xl bg-neutral-900/50 animate-pulse border border-neutral-900"
+                className="h-[420px] rounded-2xl bg-white animate-pulse border border-slate-200 shadow-sm"
               />
             ))}
           </div>
         ) : products.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-neutral-500 text-lg">No hay productos en esta categoría por el momento.</p>
+          <div className="text-center py-20 bg-white rounded-3xl border border-slate-200 shadow-sm max-w-lg mx-auto">
+            <p className="text-slate-500 text-sm font-medium">
+              No hay artículos en esta categoría por el momento.
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <div key={product.id} className="relative group h-full">
-                {/* Antigravity background glows */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-[#60A5FA]/10 to-[#F87171]/5 opacity-0 group-hover:opacity-100 transition-all duration-500 blur-xl -z-10" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
+            {products.map((product) => {
+              const isAvailable = (product.stock ?? 1) > 0 && product.availability !== "agotado";
 
-                <Card
-                  className="flex flex-col justify-between h-full bg-neutral-900/20 border-neutral-900 hover:border-neutral-800 hover:bg-neutral-900/40 transition-all duration-300 overflow-hidden group-hover:-translate-y-1.5 group-hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+              return (
+                <div
+                  key={product.id}
+                  className="bg-white rounded-2xl border border-slate-200/90 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group"
                 >
                   <div>
-                    {/* Image container */}
-                    <div className="relative aspect-square w-full bg-neutral-900 overflow-hidden border-b border-neutral-900">
+                    {/* Image Container with Badges */}
+                    <div className="relative aspect-[4/3] w-full bg-slate-50 overflow-hidden border-b border-slate-100">
                       <Image
-                        src={product.images[0]}
+                        src={product.images[0] || "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=800&q=80"}
                         alt={product.name}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        priority={false}
                       />
 
-                      {/* Status & Availability badges */}
-                      <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
-                        <span className="px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase rounded bg-blue-600/90 text-white backdrop-blur-sm shadow-md">
+                      {/* Floating status badges */}
+                      <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
+                        <span className="px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase rounded-full bg-slate-900/80 text-white backdrop-blur-sm shadow-sm">
                           {product.status}
                         </span>
                         <span
-                          className={`px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase rounded text-white backdrop-blur-sm shadow-md ${
-                            (product.stock ?? 1) > 0
-                              ? "bg-emerald-600/90"
-                              : "bg-red-600/90"
+                          className={`px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase rounded-full backdrop-blur-sm shadow-sm ${
+                            isAvailable
+                              ? "bg-emerald-600 text-white"
+                              : "bg-red-600 text-white"
                           }`}
                         >
-                          {(product.stock ?? 1) > 0
+                          {isAvailable
                             ? `${product.stock ?? 1} ${(product.stock ?? 1) === 1 ? "disponible" : "disponibles"}`
                             : "Agotado"}
                         </span>
                       </div>
                     </div>
 
-                  {/* Body content */}
-                  <CardHeader className="p-5 pb-2">
-                    <span className="text-[10px] font-bold tracking-widest text-blue-500 uppercase">
-                      {product.category}
-                    </span>
-                    <CardTitle className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors mt-1 line-clamp-1">
-                      {product.name}
-                    </CardTitle>
-                  </CardHeader>
-
-                  <CardContent className="p-5 pt-0 pb-2">
-                    <p className="text-neutral-400 text-sm line-clamp-2 leading-relaxed">
-                      {product.description}
-                    </p>
-                    
-                    {/* Specs if available */}
-                    {product.specs && (
-                      <div className="mt-4 space-y-1.5 border-t border-neutral-900 pt-3 text-[11px] text-neutral-500">
-                        {Object.entries(product.specs).slice(0, 2).map(([key, val]) => (
-                          <div key={key} className="flex justify-between">
-                            <span className="uppercase">{key}</span>
-                            <span className="text-neutral-400 font-medium">{val}</span>
-                          </div>
-                        ))}
+                    {/* Card Content */}
+                    <div className="p-5">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1">
+                        <span>{product.category}</span>
+                        {product.specs && Object.keys(product.specs).length > 0 && (
+                          <span className="text-[10px] text-blue-600 font-semibold lowercase">
+                            verificado
+                          </span>
+                        )}
                       </div>
-                    )}
-                  </CardContent>
-                </div>
 
-                {/* Footer and Price */}
-                <CardFooter className="p-5 pt-4 border-t border-neutral-900 flex flex-col items-stretch gap-4">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-xs text-neutral-500">RD$</span>
-                    <span className="text-2xl font-extrabold text-white">
-                      {product.price.toLocaleString("es-DO")}
-                    </span>
+                      <h3 className="text-base font-bold text-slate-900 leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
+                        {product.name}
+                      </h3>
+
+                      <p className="mt-2 text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                        {product.description}
+                      </p>
+
+                      {/* Specs pills */}
+                      {product.specs && (
+                        <div className="mt-3.5 pt-3 border-t border-slate-100 flex flex-wrap gap-1.5">
+                          {Object.entries(product.specs).slice(0, 2).map(([key, val]) => (
+                            <span
+                              key={key}
+                              className="inline-flex items-center text-[10px] bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md font-medium"
+                            >
+                              <strong className="mr-1 text-slate-900">{key}:</strong> {val}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  <a
-                    href={getWhatsAppMessage(product.name)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full"
-                  >
-                    <Button
-                      className="w-full bg-neutral-900 hover:bg-blue-600 hover:text-white text-neutral-300 font-semibold text-xs py-5 rounded-lg border border-neutral-800 hover:border-blue-500 transition-all duration-300 gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={product.stock === 0 || product.availability === "agotado"}
+                  {/* Card Footer */}
+                  <div className="p-5 pt-0">
+                    <div className="flex items-baseline justify-between mb-4 pt-3 border-t border-slate-100">
+                      <span className="text-xs text-slate-500 font-semibold">Precio RD$</span>
+                      <span className="text-2xl font-black text-slate-900 tracking-tight">
+                        RD$ {product.price.toLocaleString("es-DO")}
+                      </span>
+                    </div>
+
+                    <a
+                      href={getWhatsAppMessage(product.name)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full block"
                     >
-                      <MessageSquare className="w-3.5 h-3.5" />
-                      {product.stock === 0 ? "Artículo Agotado" : "Consultar Disponibilidad"}
-                    </Button>
-                  </a>
-                </CardFooter>
-              </Card>
-            </div>
-          ))}
+                      <Button
+                        className="w-full bg-slate-900 hover:bg-blue-600 text-white font-bold text-xs py-5 rounded-full transition-all duration-300 gap-2 cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                        disabled={!isAvailable}
+                      >
+                        <MessageSquare className="w-3.5 h-3.5" />
+                        {isAvailable ? "Consultar por WhatsApp" : "Artículo Agotado"}
+                      </Button>
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
+
       </div>
     </section>
   );

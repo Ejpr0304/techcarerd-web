@@ -16,25 +16,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
-  LayoutDashboard,
-  Package,
-  ArrowUpRight,
-  ArrowDownRight,
   Plus,
   Minus,
   Search,
-  Filter,
   RefreshCw,
   LogOut,
   ExternalLink,
   Trash2,
   DollarSign,
   Boxes,
-  AlertTriangle,
   History,
   CheckCircle2,
   X,
-  SlidersHorizontal,
+  ArrowUpRight,
+  ArrowDownRight,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -185,8 +180,8 @@ export default function AdminDashboardPage() {
 
     showToast(
       movementModal.type === "entrada"
-        ? `✅ Entrada registrada: +${qty} unidades de "${prod.name}" (Stock actual: ${newStock})`
-        : `📦 Salida registrada: -${qty} unidades de "${prod.name}" (Stock actual: ${newStock})`
+        ? `✅ Entrada registrada: +${qty} unidades de "${prod.name}" (Stock: ${newStock})`
+        : `📦 Salida registrada: -${qty} unidades de "${prod.name}" (Stock: ${newStock})`
     );
 
     setMovementModal({ isOpen: false, type: "entrada", product: null });
@@ -220,7 +215,6 @@ export default function AdminDashboardPage() {
     setProducts(updatedList);
     saveClientProducts(updatedList);
 
-    // Registrar entrada inicial en kardex
     if (created.stock > 0) {
       const mov = recordClientMovement({
         productId: created.id,
@@ -269,29 +263,29 @@ export default function AdminDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col font-sans">
       {/* Toast Alert */}
       {toastMsg && (
-        <div className="fixed bottom-6 right-6 z-50 bg-blue-600 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-bottom duration-200 border border-blue-400/30">
-          <CheckCircle2 className="w-5 h-5 text-white" />
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-bottom duration-200 border border-slate-700">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400" />
           <span className="text-sm font-semibold">{toastMsg}</span>
         </div>
       )}
 
       {/* Header */}
-      <header className="border-b border-neutral-850 bg-neutral-900/40 backdrop-blur-md px-6 py-4 sticky top-0 z-30 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-9 h-9 rounded-xl bg-blue-600/10 border border-blue-500/20 text-blue-500 flex items-center justify-center font-black">
+      <header className="border-b border-slate-200 bg-white/80 backdrop-blur-md px-6 py-4 sticky top-0 z-30 flex items-center justify-between">
+        <div className="flex items-center gap-3.5">
+          <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm shadow-sm">
             TC
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-base font-extrabold text-white tracking-wide">TechCareRD</h1>
-              <span className="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
-                Admin Panel
+              <h1 className="text-base font-extrabold text-slate-900 tracking-tight">TechCareRD</h1>
+              <span className="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                Panel Administrativo
               </span>
             </div>
-            <p className="text-xs text-neutral-400">Sistema de Control de Inventario & Flujo de Stock</p>
+            <p className="text-xs text-slate-500 font-medium">Control de Inventario & Flujo de Stock en Tiempo Real</p>
           </div>
         </div>
 
@@ -300,7 +294,7 @@ export default function AdminDashboardPage() {
             <Button
               variant="outline"
               size="sm"
-              className="border-neutral-800 hover:border-neutral-700 bg-neutral-900 text-neutral-300 hover:text-white text-xs gap-1.5 h-9 cursor-pointer"
+              className="border-slate-200 hover:border-slate-300 bg-white text-slate-700 hover:text-slate-950 text-xs font-semibold gap-1.5 h-9 rounded-full cursor-pointer shadow-sm"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               Ver Tienda Pública
@@ -310,7 +304,7 @@ export default function AdminDashboardPage() {
             <Button
               variant="ghost"
               size="sm"
-              className="text-neutral-400 hover:text-red-400 hover:bg-red-500/10 text-xs gap-1.5 h-9 cursor-pointer"
+              className="text-slate-500 hover:text-red-600 hover:bg-red-50 text-xs font-semibold gap-1.5 h-9 rounded-full cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5" />
               Cerrar Sesión
@@ -319,15 +313,15 @@ export default function AdminDashboardPage() {
         </div>
       </header>
 
-      {/* Navigation Tabs */}
-      <div className="border-b border-neutral-850 bg-neutral-900/20 px-6">
+      {/* Navigation Tabs (Pills Style) */}
+      <div className="border-b border-slate-200 bg-white px-6">
         <div className="flex space-x-2">
           <button
             onClick={() => setActiveTab("inventory")}
-            className={`py-3.5 px-4 text-xs font-semibold border-b-2 flex items-center gap-2 transition-colors cursor-pointer ${
+            className={`py-3.5 px-4 text-xs font-bold border-b-2 flex items-center gap-2 transition-colors cursor-pointer ${
               activeTab === "inventory"
-                ? "border-blue-500 text-blue-400 bg-blue-500/5"
-                : "border-transparent text-neutral-400 hover:text-neutral-200"
+                ? "border-blue-600 text-blue-600 bg-blue-50/50"
+                : "border-transparent text-slate-500 hover:text-slate-900"
             }`}
           >
             <Boxes className="w-4 h-4" />
@@ -335,10 +329,10 @@ export default function AdminDashboardPage() {
           </button>
           <button
             onClick={() => setActiveTab("movements")}
-            className={`py-3.5 px-4 text-xs font-semibold border-b-2 flex items-center gap-2 transition-colors cursor-pointer ${
+            className={`py-3.5 px-4 text-xs font-bold border-b-2 flex items-center gap-2 transition-colors cursor-pointer ${
               activeTab === "movements"
-                ? "border-blue-500 text-blue-400 bg-blue-500/5"
-                : "border-transparent text-neutral-400 hover:text-neutral-200"
+                ? "border-blue-600 text-blue-600 bg-blue-50/50"
+                : "border-transparent text-slate-500 hover:text-slate-900"
             }`}
           >
             <History className="w-4 h-4" />
@@ -346,10 +340,10 @@ export default function AdminDashboardPage() {
           </button>
           <button
             onClick={() => setActiveTab("metrics")}
-            className={`py-3.5 px-4 text-xs font-semibold border-b-2 flex items-center gap-2 transition-colors cursor-pointer ${
+            className={`py-3.5 px-4 text-xs font-bold border-b-2 flex items-center gap-2 transition-colors cursor-pointer ${
               activeTab === "metrics"
-                ? "border-blue-500 text-blue-400 bg-blue-500/5"
-                : "border-transparent text-neutral-400 hover:text-neutral-200"
+                ? "border-blue-600 text-blue-600 bg-blue-50/50"
+                : "border-transparent text-slate-500 hover:text-slate-900"
             }`}
           >
             <DollarSign className="w-4 h-4" />
@@ -362,46 +356,46 @@ export default function AdminDashboardPage() {
       <main className="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
         {/* KPI Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-neutral-900/40 border-neutral-850">
-            <CardHeader className="p-4 pb-2">
-              <CardDescription className="text-xs text-neutral-400 font-medium">Artículos en Catálogo</CardDescription>
-              <CardTitle className="text-2xl font-black text-white">{totalItemsCount}</CardTitle>
+          <Card className="bg-white border-slate-200 shadow-sm rounded-2xl">
+            <CardHeader className="p-5 pb-2">
+              <CardDescription className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Artículos en Catálogo</CardDescription>
+              <CardTitle className="text-3xl font-black text-slate-900 mt-1">{totalItemsCount}</CardTitle>
             </CardHeader>
-            <CardContent className="p-4 pt-0 text-[11px] text-neutral-500">
+            <CardContent className="p-5 pt-0 text-xs text-slate-500">
               Modelos únicos registrados
             </CardContent>
           </Card>
 
-          <Card className="bg-neutral-900/40 border-neutral-850">
-            <CardHeader className="p-4 pb-2">
-              <CardDescription className="text-xs text-neutral-400 font-medium">Unidades Físicas en Stock</CardDescription>
-              <CardTitle className="text-2xl font-black text-blue-400">{totalStockUnits}</CardTitle>
+          <Card className="bg-white border-slate-200 shadow-sm rounded-2xl">
+            <CardHeader className="p-5 pb-2">
+              <CardDescription className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Unidades Físicas en Stock</CardDescription>
+              <CardTitle className="text-3xl font-black text-blue-600 mt-1">{totalStockUnits}</CardTitle>
             </CardHeader>
-            <CardContent className="p-4 pt-0 text-[11px] text-neutral-500">
+            <CardContent className="p-5 pt-0 text-xs text-slate-500">
               Total de piezas físicas disponibles
             </CardContent>
           </Card>
 
-          <Card className="bg-neutral-900/40 border-neutral-850">
-            <CardHeader className="p-4 pb-2">
-              <CardDescription className="text-xs text-neutral-400 font-medium">Valor Total del Stock</CardDescription>
-              <CardTitle className="text-2xl font-black text-emerald-400">
+          <Card className="bg-white border-slate-200 shadow-sm rounded-2xl">
+            <CardHeader className="p-5 pb-2">
+              <CardDescription className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Valor Total del Stock</CardDescription>
+              <CardTitle className="text-3xl font-black text-emerald-600 mt-1">
                 RD$ {totalInventoryValue.toLocaleString("es-DO")}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4 pt-0 text-[11px] text-neutral-500">
+            <CardContent className="p-5 pt-0 text-xs text-slate-500">
               Precio venta estimado en tienda
             </CardContent>
           </Card>
 
-          <Card className="bg-neutral-900/40 border-neutral-850">
-            <CardHeader className="p-4 pb-2">
-              <CardDescription className="text-xs text-neutral-400 font-medium">Bajo Stock / Agotados</CardDescription>
-              <CardTitle className={`text-2xl font-black ${lowStockCount > 0 ? "text-amber-400" : "text-neutral-400"}`}>
+          <Card className="bg-white border-slate-200 shadow-sm rounded-2xl">
+            <CardHeader className="p-5 pb-2">
+              <CardDescription className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Bajo Stock / Agotados</CardDescription>
+              <CardTitle className={`text-3xl font-black mt-1 ${lowStockCount > 0 ? "text-amber-500" : "text-slate-400"}`}>
                 {lowStockCount}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4 pt-0 text-[11px] text-neutral-500">
+            <CardContent className="p-5 pt-0 text-xs text-slate-500">
               Artículos con 1 o 0 unidades
             </CardContent>
           </Card>
@@ -411,26 +405,26 @@ export default function AdminDashboardPage() {
         {activeTab === "inventory" && (
           <div className="space-y-4">
             {/* Action Bar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-neutral-900/30 p-4 rounded-xl border border-neutral-850">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
               <div className="flex flex-1 items-center gap-2 max-w-md">
                 <div className="relative w-full">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <Input
                     type="text"
                     placeholder="Buscar por artículo, modelo o descripción..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9 h-10 bg-neutral-950 border-neutral-800 text-xs text-white"
+                    className="pl-9 h-10 bg-slate-50 border-slate-200 text-xs text-slate-900 rounded-xl"
                   />
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2.5">
                 {/* Category Filter */}
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="h-10 px-3 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-neutral-300 font-medium focus:border-blue-500 outline-none cursor-pointer"
+                  className="h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 font-semibold focus:border-blue-500 outline-none cursor-pointer"
                 >
                   <option value="todos">Todas las Categorías</option>
                   <option value="laptops">Laptops</option>
@@ -441,7 +435,7 @@ export default function AdminDashboardPage() {
 
                 <Button
                   onClick={() => setNewProductModal(true)}
-                  className="bg-blue-600 hover:bg-blue-500 text-white text-xs h-10 gap-1.5 px-4 font-semibold cursor-pointer"
+                  className="bg-slate-900 hover:bg-slate-800 text-white text-xs h-10 gap-1.5 px-4 font-bold rounded-full cursor-pointer shadow-sm"
                 >
                   <Plus className="w-4 h-4" />
                   Nuevo Artículo
@@ -451,7 +445,7 @@ export default function AdminDashboardPage() {
                   onClick={handleResetInitial}
                   variant="outline"
                   title="Restaurar los 19 artículos oficiales"
-                  className="border-neutral-800 bg-neutral-950 hover:bg-neutral-900 text-neutral-400 hover:text-white text-xs h-10 px-3 cursor-pointer"
+                  className="border-slate-200 bg-white hover:bg-slate-50 text-slate-500 hover:text-slate-900 text-xs h-10 px-3 rounded-full cursor-pointer"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                 </Button>
@@ -459,24 +453,24 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Inventory Table */}
-            <div className="bg-neutral-900/20 border border-neutral-850 rounded-xl overflow-hidden shadow-xl">
+            <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-neutral-900/60 text-neutral-400 uppercase text-[10px] tracking-wider border-b border-neutral-850 font-bold">
+                  <thead className="bg-slate-50 text-slate-500 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
                     <tr>
-                      <th className="py-3 px-4">Artículo / Imagen</th>
-                      <th className="py-3 px-4">Categoría</th>
-                      <th className="py-3 px-4">Precio RD$</th>
-                      <th className="py-3 px-4 text-center">Stock Actual</th>
-                      <th className="py-3 px-4 text-center">Disponibilidad</th>
-                      <th className="py-3 px-4 text-right">Flujo de Stock</th>
-                      <th className="py-3 px-4 text-center">Acciones</th>
+                      <th className="py-3.5 px-4">Artículo / Imagen</th>
+                      <th className="py-3.5 px-4">Categoría</th>
+                      <th className="py-3.5 px-4">Precio RD$</th>
+                      <th className="py-3.5 px-4 text-center">Stock</th>
+                      <th className="py-3.5 px-4 text-center">Disponibilidad</th>
+                      <th className="py-3.5 px-4 text-right">Flujo de Stock</th>
+                      <th className="py-3.5 px-4 text-center">Acciones</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-neutral-850/60">
+                  <tbody className="divide-y divide-slate-100">
                     {filteredProducts.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="text-center py-12 text-neutral-500">
+                        <td colSpan={7} className="text-center py-12 text-slate-400">
                           No se encontraron artículos con los filtros aplicados.
                         </td>
                       </tr>
@@ -484,12 +478,12 @@ export default function AdminDashboardPage() {
                       filteredProducts.map((prod) => (
                         <tr
                           key={prod.id}
-                          className="hover:bg-neutral-900/40 transition-colors"
+                          className="hover:bg-slate-50/70 transition-colors"
                         >
                           {/* Image & Name */}
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-3">
-                              <div className="relative w-12 h-12 rounded-lg bg-neutral-950 border border-neutral-800 overflow-hidden shrink-0">
+                              <div className="relative w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0">
                                 <Image
                                   src={prod.images[0] || "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=800&q=80"}
                                   alt={prod.name}
@@ -498,42 +492,42 @@ export default function AdminDashboardPage() {
                                 />
                               </div>
                               <div className="max-w-xs">
-                                <p className="font-bold text-white text-sm leading-snug line-clamp-1">
+                                <p className="font-bold text-slate-900 text-sm leading-snug line-clamp-1">
                                   {prod.name}
                                 </p>
-                                <p className="text-[11px] text-neutral-400 line-clamp-1 mt-0.5">
+                                <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">
                                   {prod.description}
                                 </p>
                               </div>
                             </div>
                           </td>
 
-                          {/* Category & Status */}
+                          {/* Category */}
                           <td className="py-3 px-4">
                             <div className="flex flex-col gap-1">
-                              <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded w-max">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full w-max">
                                 {prod.category}
                               </span>
-                              <span className="text-[9px] uppercase tracking-wider text-neutral-500">
-                                Condición: {prod.status}
+                              <span className="text-[9px] uppercase tracking-wider text-slate-400 font-semibold">
+                                {prod.status}
                               </span>
                             </div>
                           </td>
 
                           {/* Price */}
-                          <td className="py-3 px-4 font-bold text-white">
+                          <td className="py-3 px-4 font-bold text-slate-900 text-sm">
                             RD$ {prod.price.toLocaleString("es-DO")}
                           </td>
 
                           {/* Stock */}
                           <td className="py-3 px-4 text-center">
                             <span
-                              className={`inline-flex items-center justify-center font-extrabold text-sm px-3 py-1 rounded-full ${
+                              className={`inline-flex items-center justify-center font-black text-xs px-3 py-1 rounded-full ${
                                 (prod.stock || 0) > 2
-                                  ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                                   : (prod.stock || 0) === 1
-                                  ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
-                                  : "bg-red-500/15 text-red-400 border border-red-500/30"
+                                  ? "bg-amber-50 text-amber-700 border border-amber-200"
+                                  : "bg-red-50 text-red-700 border border-red-200"
                               }`}
                             >
                               {prod.stock || 0}
@@ -543,23 +537,23 @@ export default function AdminDashboardPage() {
                           {/* Availability Badge */}
                           <td className="py-3 px-4 text-center">
                             <span
-                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                              className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
                                 (prod.stock || 0) > 0
-                                  ? "bg-emerald-600/20 text-emerald-400"
-                                  : "bg-red-600/20 text-red-400"
+                                  ? "bg-emerald-100 text-emerald-800"
+                                  : "bg-red-100 text-red-800"
                               }`}
                             >
                               {(prod.stock || 0) > 0 ? "Disponible" : "Agotado"}
                             </span>
                           </td>
 
-                          {/* Stock Flow Buttons (+ Entrada / - Salida) */}
+                          {/* Stock Flow Buttons */}
                           <td className="py-3 px-4 text-right">
                             <div className="inline-flex items-center gap-1.5">
                               <Button
                                 size="sm"
                                 onClick={() => handleOpenMovement(prod, "entrada")}
-                                className="h-8 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30 text-xs px-2.5 font-bold gap-1 cursor-pointer transition-all"
+                                className="h-8 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 text-xs px-2.5 font-bold rounded-full gap-1 cursor-pointer transition-all shadow-xs"
                               >
                                 <Plus className="w-3.5 h-3.5" />
                                 Entrada
@@ -569,7 +563,7 @@ export default function AdminDashboardPage() {
                                 size="sm"
                                 disabled={(prod.stock || 0) <= 0}
                                 onClick={() => handleOpenMovement(prod, "salida")}
-                                className="h-8 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white border border-red-500/30 text-xs px-2.5 font-bold gap-1 cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                                className="h-8 bg-red-50 hover:bg-red-600 text-red-700 hover:text-white border border-red-200 text-xs px-2.5 font-bold rounded-full gap-1 cursor-pointer transition-all shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
                               >
                                 <Minus className="w-3.5 h-3.5" />
                                 Salida
@@ -577,11 +571,11 @@ export default function AdminDashboardPage() {
                             </div>
                           </td>
 
-                          {/* Actions */}
+                          {/* Delete */}
                           <td className="py-3 px-4 text-center">
                             <button
                               onClick={() => handleDeleteProduct(prod.id, prod.name)}
-                              className="text-neutral-500 hover:text-red-400 p-1.5 rounded hover:bg-neutral-800 transition-colors cursor-pointer"
+                              className="text-slate-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                               title="Eliminar artículo"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -600,45 +594,45 @@ export default function AdminDashboardPage() {
         {/* TAB 2: HISTORIAL DE MOVIMIENTOS (KARDEX) */}
         {activeTab === "movements" && (
           <div className="space-y-4">
-            <div className="bg-neutral-900/30 p-4 rounded-xl border border-neutral-850 flex items-center justify-between">
+            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-white">Registro de Entradas y Salidas (Kardex)</h3>
-                <p className="text-xs text-neutral-400">
-                  Historial detallado de todas las recepciones y despachos registrados en el taller.
+                <h3 className="text-base font-bold text-slate-900">Bitácora de Entradas y Salidas (Kardex)</h3>
+                <p className="text-xs text-slate-500">
+                  Registro cronológico de movimientos para auditoría de piezas y ventas.
                 </p>
               </div>
             </div>
 
-            <div className="bg-neutral-900/20 border border-neutral-850 rounded-xl overflow-hidden shadow-xl">
+            <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
               <table className="w-full text-left text-xs">
-                <thead className="bg-neutral-900/60 text-neutral-400 uppercase text-[10px] tracking-wider border-b border-neutral-850 font-bold">
+                <thead className="bg-slate-50 text-slate-500 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
                   <tr>
-                    <th className="py-3 px-4">Fecha & Hora</th>
-                    <th className="py-3 px-4">Tipo Movimiento</th>
-                    <th className="py-3 px-4">Artículo</th>
-                    <th className="py-3 px-4 text-center">Cantidad</th>
-                    <th className="py-3 px-4">Motivo / Justificación</th>
+                    <th className="py-3.5 px-4">Fecha & Hora</th>
+                    <th className="py-3.5 px-4">Tipo</th>
+                    <th className="py-3.5 px-4">Artículo</th>
+                    <th className="py-3.5 px-4 text-center">Cantidad</th>
+                    <th className="py-3.5 px-4">Motivo / Justificación</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-neutral-850/60">
+                <tbody className="divide-y divide-slate-100">
                   {movements.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="text-center py-12 text-neutral-500">
+                      <td colSpan={5} className="text-center py-12 text-slate-400">
                         Aún no hay movimientos registrados. Haz clic en "+ Entrada" o "- Salida" en la pestaña de inventario.
                       </td>
                     </tr>
                   ) : (
                     movements.map((mov) => (
-                      <tr key={mov.id} className="hover:bg-neutral-900/40">
-                        <td className="py-3 px-4 text-neutral-400 font-mono text-[11px]">
+                      <tr key={mov.id} className="hover:bg-slate-50/70">
+                        <td className="py-3 px-4 text-slate-500 font-mono text-[11px]">
                           {new Date(mov.date).toLocaleString("es-DO")}
                         </td>
                         <td className="py-3 px-4">
                           <span
                             className={`inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
                               mov.type === "entrada"
-                                ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                                : "bg-red-500/20 text-red-400 border border-red-500/30"
+                                ? "bg-emerald-100 text-emerald-800"
+                                : "bg-red-100 text-red-800"
                             }`}
                           >
                             {mov.type === "entrada" ? (
@@ -652,13 +646,13 @@ export default function AdminDashboardPage() {
                             )}
                           </span>
                         </td>
-                        <td className="py-3 px-4 font-semibold text-white">
+                        <td className="py-3 px-4 font-semibold text-slate-900">
                           {mov.productName}
                         </td>
                         <td className="py-3 px-4 text-center font-bold text-sm">
                           {mov.type === "entrada" ? `+${mov.quantity}` : `-${mov.quantity}`}
                         </td>
-                        <td className="py-3 px-4 text-neutral-300">
+                        <td className="py-3 px-4 text-slate-600">
                           {mov.reason}
                         </td>
                       </tr>
@@ -673,14 +667,14 @@ export default function AdminDashboardPage() {
         {/* TAB 3: MÉTRICAS Y DISTRIBUCIÓN */}
         {activeTab === "metrics" && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="bg-neutral-900/30 border-neutral-850">
+            <Card className="bg-white border-slate-200 shadow-sm rounded-2xl">
               <CardHeader>
-                <CardTitle className="text-base text-white">Distribución de Artículos por Categoría</CardTitle>
-                <CardDescription className="text-xs text-neutral-400">
-                  Conteo de piezas y valor por línea de producto.
+                <CardTitle className="text-base text-slate-900">Distribución por Línea de Producto</CardTitle>
+                <CardDescription className="text-xs text-slate-500">
+                  Conteo de piezas y valor monetario en mostrador.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3.5">
                 {["laptops", "consolas", "componentes", "accesorios"].map((cat) => {
                   const catProducts = products.filter((p) => p.category === cat);
                   const catStock = catProducts.reduce((acc, p) => acc + (p.stock || 0), 0);
@@ -688,15 +682,15 @@ export default function AdminDashboardPage() {
                   return (
                     <div
                       key={cat}
-                      className="flex items-center justify-between p-3 rounded-lg bg-neutral-950/60 border border-neutral-850"
+                      className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200/80"
                     >
                       <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-blue-400">{cat}</p>
-                        <p className="text-[11px] text-neutral-400">{catProducts.length} modelos ({catStock} unidades físicas)</p>
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-900">{cat}</p>
+                        <p className="text-[11px] text-slate-500">{catProducts.length} modelos ({catStock} unidades físicas)</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs font-bold text-white">RD$ {catVal.toLocaleString("es-DO")}</p>
-                        <p className="text-[10px] text-neutral-500">Valor en stock</p>
+                        <p className="text-xs font-bold text-slate-900">RD$ {catVal.toLocaleString("es-DO")}</p>
+                        <p className="text-[10px] text-slate-500 font-medium">Valor total</p>
                       </div>
                     </div>
                   );
@@ -704,40 +698,40 @@ export default function AdminDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-neutral-900/30 border-neutral-850">
+            <Card className="bg-white border-slate-200 shadow-sm rounded-2xl">
               <CardHeader>
-                <CardTitle className="text-base text-white">Instrucciones de Uso Diario</CardTitle>
-                <CardDescription className="text-xs text-neutral-400">
+                <CardTitle className="text-base text-slate-900">Instrucciones de Uso Diario</CardTitle>
+                <CardDescription className="text-xs text-slate-500">
                   Cómo mantener tu catálogo actualizado en 3 sencillos pasos.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3 text-xs text-neutral-300 leading-relaxed">
-                <div className="p-3 rounded-lg bg-neutral-950/60 border border-neutral-850 flex gap-3">
-                  <div className="w-6 h-6 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold text-xs shrink-0">
+              <CardContent className="space-y-3 text-xs text-slate-600 leading-relaxed">
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex gap-3">
+                  <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">
                     1
                   </div>
                   <div>
-                    <strong className="text-white block mb-0.5">Cuando te llegue nueva mercancía:</strong>
-                    Presiona el botón verde <strong>`+ Entrada`</strong> junto al artículo correspondiente y pon la cantidad recibida. El stock se sumará de inmediato.
+                    <strong className="text-slate-900 block mb-0.5">Cuando te llegue nueva mercancía:</strong>
+                    Presiona el botón verde <strong>`+ Entrada`</strong> junto al artículo y pon la cantidad recibida.
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg bg-neutral-950/60 border border-neutral-850 flex gap-3">
-                  <div className="w-6 h-6 rounded-full bg-red-600/20 text-red-400 flex items-center justify-center font-bold text-xs shrink-0">
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex gap-3">
+                  <div className="w-6 h-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs shrink-0">
                     2
                   </div>
                   <div>
-                    <strong className="text-white block mb-0.5">Cuando vendas o uses una pieza:</strong>
+                    <strong className="text-slate-900 block mb-0.5">Cuando vendas o uses una pieza:</strong>
                     Presiona el botón rojo <strong>`- Salida`</strong>. Si las unidades llegan a 0, la web pondrá automáticamente la etiqueta roja de <strong>Agotado</strong>.
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg bg-neutral-950/60 border border-neutral-850 flex gap-3">
-                  <div className="w-6 h-6 rounded-full bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex gap-3">
+                  <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0">
                     3
                   </div>
                   <div>
-                    <strong className="text-white block mb-0.5">Sincronización en Vivo:</strong>
+                    <strong className="text-slate-900 block mb-0.5">Sincronización en Vivo:</strong>
                     Los clientes en tu página principal ven los cambios al instante sin que tengas que reprogramar nada.
                   </div>
                 </div>
@@ -749,44 +743,44 @@ export default function AdminDashboardPage() {
 
       {/* MODAL DE ENTRADA / SALIDA */}
       {movementModal.isOpen && movementModal.product && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative animate-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative animate-in zoom-in-95 duration-150">
             <button
               onClick={() => setMovementModal({ isOpen: false, type: "entrada", product: null })}
-              className="absolute top-4 right-4 text-neutral-400 hover:text-white"
+              className="absolute top-5 right-5 text-slate-400 hover:text-slate-800"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3.5 mb-5">
               <div
                 className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                   movementModal.type === "entrada"
-                    ? "bg-emerald-600/20 text-emerald-400 border border-emerald-500/30"
-                    : "bg-red-600/20 text-red-400 border border-red-500/30"
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-red-100 text-red-700"
                 }`}
               >
                 {movementModal.type === "entrada" ? <Plus className="w-5 h-5" /> : <Minus className="w-5 h-5" />}
               </div>
               <div>
-                <h3 className="text-base font-bold text-white">
+                <h3 className="text-base font-bold text-slate-900">
                   {movementModal.type === "entrada" ? "Registrar Entrada de Mercancía" : "Registrar Salida de Inventario"}
                 </h3>
-                <p className="text-xs text-neutral-400">{movementModal.product.name}</p>
+                <p className="text-xs text-slate-500 font-medium">{movementModal.product.name}</p>
               </div>
             </div>
 
             <form onSubmit={handleConfirmMovement} className="space-y-4">
-              <div className="bg-neutral-950 p-3 rounded-lg border border-neutral-800 text-xs flex justify-between">
-                <span className="text-neutral-400">Stock Actual en Tienda:</span>
-                <span className="font-extrabold text-white text-sm">
+              <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs flex justify-between items-center">
+                <span className="text-slate-600 font-medium">Stock Actual en Tienda:</span>
+                <span className="font-extrabold text-slate-900 text-sm">
                   {movementModal.product.stock || 0} unidades
                 </span>
               </div>
 
               <div>
-                <Label htmlFor="qty" className="text-xs text-neutral-300 font-semibold">
-                  Cantidad a {movementModal.type === "entrada" ? "Ingresar" : "Retirar"}
+                <Label htmlFor="qty" className="text-xs text-slate-700 font-semibold">
+                  Cantidad a {movementModal.type === "entrada" ? "Ingresar (+)" : "Retirar (-)"}
                 </Label>
                 <Input
                   id="qty"
@@ -795,13 +789,13 @@ export default function AdminDashboardPage() {
                   max={movementModal.type === "salida" ? movementModal.product.stock || 1 : 999}
                   value={movementQty}
                   onChange={(e) => setMovementQty(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="mt-1 bg-neutral-950 border-neutral-800 text-white font-bold text-base h-11"
+                  className="mt-1 bg-slate-50 border-slate-200 text-slate-900 font-black text-lg h-12 rounded-xl"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="reason" className="text-xs text-neutral-300 font-semibold">
+                <Label htmlFor="reason" className="text-xs text-slate-700 font-semibold">
                   Motivo / Comentario
                 </Label>
                 <Input
@@ -814,22 +808,22 @@ export default function AdminDashboardPage() {
                   }
                   value={movementReason}
                   onChange={(e) => setMovementReason(e.target.value)}
-                  className="mt-1 bg-neutral-950 border-neutral-800 text-white text-xs h-10"
+                  className="mt-1 bg-slate-50 border-slate-200 text-slate-900 text-xs h-10 rounded-xl"
                 />
               </div>
 
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-2.5 pt-2">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setMovementModal({ isOpen: false, type: "entrada", product: null })}
-                  className="flex-1 border-neutral-800 bg-neutral-950 text-neutral-300 hover:text-white text-xs h-10 cursor-pointer"
+                  className="flex-1 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs h-11 rounded-full cursor-pointer"
                 >
                   Cancelar
                 </Button>
                 <Button
                   type="submit"
-                  className={`flex-1 text-white font-bold text-xs h-10 cursor-pointer ${
+                  className={`flex-1 text-white font-bold text-xs h-11 rounded-full cursor-pointer shadow-md ${
                     movementModal.type === "entrada"
                       ? "bg-emerald-600 hover:bg-emerald-500"
                       : "bg-red-600 hover:bg-red-500"
@@ -845,28 +839,28 @@ export default function AdminDashboardPage() {
 
       {/* MODAL DE NUEVO PRODUCTO */}
       {newProductModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative animate-in zoom-in-95 duration-150 my-8">
+        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative animate-in zoom-in-95 duration-150 my-8">
             <button
               onClick={() => setNewProductModal(false)}
-              className="absolute top-4 right-4 text-neutral-400 hover:text-white"
+              className="absolute top-5 right-5 text-slate-400 hover:text-slate-800"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center justify-center">
+            <div className="flex items-center gap-3.5 mb-5">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
                 <Plus className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-white">Agregar Nuevo Artículo</h3>
-                <p className="text-xs text-neutral-400">Se mostrará en la tienda web pública y en tu inventario.</p>
+                <h3 className="text-base font-bold text-slate-900">Agregar Nuevo Artículo</h3>
+                <p className="text-xs text-slate-500">Se mostrará en la tienda web pública y en tu inventario.</p>
               </div>
             </div>
 
-            <form onSubmit={handleCreateProduct} className="space-y-3.5">
+            <form onSubmit={handleCreateProduct} className="space-y-4">
               <div>
-                <Label htmlFor="prodName" className="text-xs text-neutral-300 font-semibold">
+                <Label htmlFor="prodName" className="text-xs text-slate-700 font-semibold">
                   Nombre del Artículo / Modelo
                 </Label>
                 <Input
@@ -875,13 +869,13 @@ export default function AdminDashboardPage() {
                   placeholder="Ej: Nintendo Switch OLED / Laptop Dell XPS 15..."
                   value={newProd.name}
                   onChange={(e) => setNewProd({ ...newProd, name: e.target.value })}
-                  className="mt-1 bg-neutral-950 border-neutral-800 text-white text-xs h-10"
+                  className="mt-1 bg-slate-50 border-slate-200 text-slate-900 text-xs h-10 rounded-xl"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="prodDesc" className="text-xs text-neutral-300 font-semibold">
+                <Label htmlFor="prodDesc" className="text-xs text-slate-700 font-semibold">
                   Descripción Técnica Corta
                 </Label>
                 <Input
@@ -890,20 +884,20 @@ export default function AdminDashboardPage() {
                   placeholder="Ej: Procesador, tarjeta gráfica, detalles de condición..."
                   value={newProd.description}
                   onChange={(e) => setNewProd({ ...newProd, description: e.target.value })}
-                  className="mt-1 bg-neutral-950 border-neutral-800 text-white text-xs h-10"
+                  className="mt-1 bg-slate-50 border-slate-200 text-slate-900 text-xs h-10 rounded-xl"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3.5">
                 <div>
-                  <Label htmlFor="prodCategory" className="text-xs text-neutral-300 font-semibold">
+                  <Label htmlFor="prodCategory" className="text-xs text-slate-700 font-semibold">
                     Categoría
                   </Label>
                   <select
                     id="prodCategory"
                     value={newProd.category}
                     onChange={(e) => setNewProd({ ...newProd, category: e.target.value as ProductCategory })}
-                    className="mt-1 w-full h-10 px-3 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-white"
+                    className="mt-1 w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 font-medium"
                   >
                     <option value="laptops">Laptops</option>
                     <option value="consolas">Consolas</option>
@@ -913,14 +907,14 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="prodStatus" className="text-xs text-neutral-300 font-semibold">
+                  <Label htmlFor="prodStatus" className="text-xs text-slate-700 font-semibold">
                     Condición
                   </Label>
                   <select
                     id="prodStatus"
                     value={newProd.status}
                     onChange={(e) => setNewProd({ ...newProd, status: e.target.value as ProductStatus })}
-                    className="mt-1 w-full h-10 px-3 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-white"
+                    className="mt-1 w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 font-medium"
                   >
                     <option value="nuevo">Nuevo</option>
                     <option value="usado">Usado / Seminuevo</option>
@@ -928,9 +922,9 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3.5">
                 <div>
-                  <Label htmlFor="prodPrice" className="text-xs text-neutral-300 font-semibold">
+                  <Label htmlFor="prodPrice" className="text-xs text-slate-700 font-semibold">
                     Precio de Venta (RD$)
                   </Label>
                   <Input
@@ -940,13 +934,13 @@ export default function AdminDashboardPage() {
                     placeholder="RD$ 0"
                     value={newProd.price || ""}
                     onChange={(e) => setNewProd({ ...newProd, price: parseFloat(e.target.value) || 0 })}
-                    className="mt-1 bg-neutral-950 border-neutral-800 text-white text-xs h-10 font-bold"
+                    className="mt-1 bg-slate-50 border-slate-200 text-slate-900 text-xs h-10 rounded-xl font-bold"
                     required
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="prodStock" className="text-xs text-neutral-300 font-semibold">
+                  <Label htmlFor="prodStock" className="text-xs text-slate-700 font-semibold">
                     Stock Inicial (Unidades)
                   </Label>
                   <Input
@@ -955,14 +949,14 @@ export default function AdminDashboardPage() {
                     min="0"
                     value={newProd.stock}
                     onChange={(e) => setNewProd({ ...newProd, stock: parseInt(e.target.value) || 0 })}
-                    className="mt-1 bg-neutral-950 border-neutral-800 text-white text-xs h-10 font-bold"
+                    className="mt-1 bg-slate-50 border-slate-200 text-slate-900 text-xs h-10 rounded-xl font-bold"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="prodImg" className="text-xs text-neutral-300 font-semibold">
+                <Label htmlFor="prodImg" className="text-xs text-slate-700 font-semibold">
                   URL de Imagen (Unsplash u hospedada)
                 </Label>
                 <Input
@@ -971,22 +965,22 @@ export default function AdminDashboardPage() {
                   placeholder="https://images.unsplash.com/..."
                   value={newProd.imageUrl}
                   onChange={(e) => setNewProd({ ...newProd, imageUrl: e.target.value })}
-                  className="mt-1 bg-neutral-950 border-neutral-800 text-white text-xs h-10"
+                  className="mt-1 bg-slate-50 border-slate-200 text-slate-900 text-xs h-10 rounded-xl"
                 />
               </div>
 
-              <div className="flex gap-2 pt-3">
+              <div className="flex gap-2.5 pt-2">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setNewProductModal(false)}
-                  className="flex-1 border-neutral-800 bg-neutral-950 text-neutral-300 hover:text-white text-xs h-10 cursor-pointer"
+                  className="flex-1 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs h-11 rounded-full cursor-pointer"
                 >
                   Cancelar
                 </Button>
                 <Button
                   type="submit"
-                  className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs h-10 cursor-pointer"
+                  className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs h-11 rounded-full cursor-pointer shadow-md"
                 >
                   Guardar Artículo
                 </Button>

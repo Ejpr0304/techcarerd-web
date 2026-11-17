@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
-import { MessageSquare, Phone, Lock } from "lucide-react";
-import { LogoIcon } from "@/components/LogoIcon";
+import { MessageSquare, Phone, Lock, ArrowUp } from "lucide-react";
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -29,53 +28,58 @@ function InstagramIcon({ className }: { className?: string }) {
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <footer className="bg-neutral-950 border-t border-neutral-900 pt-16 pb-8 text-neutral-400">
+    <footer className="bg-[#090D16] text-slate-400 pt-20 pb-12 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        
+        {/* Main 4 Columns */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+          
           {/* Brand Column */}
-          <div className="space-y-4">
-            <Link href="#inicio" className="inline-flex items-center group">
-              <div className="relative flex items-center transition-all duration-300 group-hover:scale-105">
-                <img
-                  src="/logo-darkmode.png"
-                  alt="TechCareRD Logo"
-                  className="h-24 sm:h-28 w-auto object-contain filter drop-shadow-[0_0_15px_rgba(37,99,235,0.4)]"
-                />
+          <div className="md:col-span-4 space-y-4">
+            <Link href="#inicio" className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-white text-slate-950 flex items-center justify-center font-black text-sm">
+                TC
               </div>
+              <span className="text-xl font-black text-white tracking-tight">
+                TechCare<span className="text-blue-500">RD</span>
+              </span>
             </Link>
-            <p className="text-sm text-neutral-500 leading-relaxed">
-              Taller técnico y tienda especializada en el cuidado y optimización de tus dispositivos de juego y cómputo favoritos.
+            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-sm">
+              Taller técnico especializado en el cuidado, optimización térmica y venta de repuestos seleccionados para consolas de videojuegos y laptops en Santo Domingo.
             </p>
-            {/* Social Links */}
-            <div className="flex items-center gap-4 pt-2">
+            <div className="flex items-center gap-3 pt-2">
               <a
                 href={siteConfig.contact.instagramLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-neutral-900 hover:bg-blue-600 hover:text-white border border-neutral-800 hover:border-blue-500 flex items-center justify-center transition-all duration-200"
+                className="w-9 h-9 rounded-full bg-slate-900 hover:bg-fuchsia-600 hover:text-white border border-slate-800 flex items-center justify-center transition-all"
                 aria-label="Instagram"
               >
-                <InstagramIcon className="w-4.5 h-4.5" />
+                <InstagramIcon className="w-4 h-4" />
               </a>
               <a
                 href={siteConfig.contact.whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-neutral-900 hover:bg-blue-600 hover:text-white border border-neutral-800 hover:border-blue-500 flex items-center justify-center transition-all duration-200"
+                className="w-9 h-9 rounded-full bg-slate-900 hover:bg-emerald-600 hover:text-white border border-slate-800 flex items-center justify-center transition-all"
                 aria-label="WhatsApp"
               >
-                <MessageSquare className="w-4.5 h-4.5" />
+                <MessageSquare className="w-4 h-4" />
               </a>
             </div>
           </div>
 
           {/* Quick Links Column */}
-          <div>
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-5">
+          <div className="md:col-span-3">
+            <h4 className="text-xs font-bold text-white uppercase tracking-widest mb-5">
               Navegación
             </h4>
-            <ul className="space-y-3.5 text-sm">
+            <ul className="space-y-3 text-xs sm:text-sm">
               {siteConfig.mainNav.slice(0, 5).map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className="hover:text-white transition-colors">
@@ -86,57 +90,68 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Quick Links Column 2 */}
-          <div>
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-5">
-              Soporte
+          {/* Support Column */}
+          <div className="md:col-span-3">
+            <h4 className="text-xs font-bold text-white uppercase tracking-widest mb-5">
+              Taller & Clientes
             </h4>
-            <ul className="space-y-3.5 text-sm">
-              {siteConfig.mainNav.slice(5).map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className="hover:text-white transition-colors">
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
+            <ul className="space-y-3 text-xs sm:text-sm">
               <li>
-                <Link href="/tracking" className="text-blue-500 hover:text-blue-400 font-semibold transition-colors flex items-center gap-1">
+                <Link href="#productos" className="hover:text-white transition-colors">
+                  Catálogo en Tienda
+                </Link>
+              </li>
+              <li>
+                <Link href="#antes-despues" className="hover:text-white transition-colors">
+                  Evidencia Antes & Después
+                </Link>
+              </li>
+              <li>
+                <Link href="/tracking" className="text-blue-400 hover:text-blue-300 font-semibold transition-colors">
                   Seguimiento de Órdenes
+                </Link>
+              </li>
+              <li>
+                <Link href="/login" className="hover:text-white flex items-center gap-1.5 transition-colors">
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>Portal Administrativo</span>
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Contact Details Column */}
-          <div>
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-5">
+          {/* Contact Details */}
+          <div className="md:col-span-2">
+            <h4 className="text-xs font-bold text-white uppercase tracking-widest mb-5">
               Contacto
             </h4>
-            <ul className="space-y-4 text-sm text-neutral-500">
-              <li className="flex items-start gap-2.5">
-                <Phone className="w-4 h-4 text-neutral-600 shrink-0 mt-0.5" />
-                <span className="text-neutral-400 font-medium">{siteConfig.contact.phone}</span>
-              </li>
-            </ul>
+            <div className="space-y-3 text-xs sm:text-sm text-slate-400">
+              <p className="font-semibold text-white">{siteConfig.contact.phone}</p>
+              <p>{siteConfig.contact.address}</p>
+              <p className="text-[11px] text-slate-500 pt-2">{siteConfig.openingHours.weekdays}</p>
+            </div>
           </div>
+
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-neutral-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
+        <div className="pt-8 border-t border-slate-850 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>&copy; {currentYear} {siteConfig.name}. Todos los derechos reservados.</p>
           <div className="flex items-center gap-6">
-            <span className="hover:text-neutral-400 cursor-pointer">Términos de Servicio</span>
-            <span className="hover:text-neutral-400 cursor-pointer">Política de Privacidad</span>
-            <Link
-              href="/login"
-              className="hover:text-blue-400 flex items-center gap-1.5 text-neutral-500 transition-colors py-1 px-2 rounded hover:bg-neutral-900"
-              title="Portal Administrativo / Dashboard"
-            >
-              <Lock className="w-3 h-3 text-neutral-600" />
-              <span>Acceso Administrativo</span>
+            <Link href="/login" className="hover:text-slate-300 flex items-center gap-1.5 transition-colors">
+              <Lock className="w-3 h-3" />
+              <span>Acceso Staff</span>
             </Link>
+            <button
+              onClick={scrollToTop}
+              className="hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
+            >
+              <span>Subir</span>
+              <ArrowUp className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
+
       </div>
     </footer>
   );
