@@ -326,7 +326,7 @@ export const initialProducts: Product[] = [
   },
 ];
 
-// Helper para sincronizar productos en localStorage en el cliente
+// Storage keys para cache de cliente
 const STORAGE_KEY = "techcarerd_inventory_products";
 const MOVEMENTS_KEY = "techcarerd_inventory_movements";
 
@@ -335,23 +335,11 @@ export function getClientProducts(): Product[] {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(initialProducts));
       return initialProducts;
     }
     return JSON.parse(stored);
   } catch {
     return initialProducts;
-  }
-}
-
-export function saveClientProducts(products: Product[]): void {
-  if (typeof window === "undefined") return;
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-    // Disparar evento para que otras pestañas o componentes se sincronicen
-    window.dispatchEvent(new Event("inventory_updated"));
-  } catch (e) {
-    console.error("Error guardando productos locales:", e);
   }
 }
 
@@ -365,72 +353,141 @@ export function getClientMovements(): InventoryMovement[] {
   }
 }
 
-export function recordClientMovement(
+/**
+ * Obtiene el inventario sincronizado desde el servidor (API /api/products).
+ * Funciona para cualquier dispositivo, pestaña de incógnito o navegador en tiempo real.
+ */
+export async function getProducts(category?: string): Promise<Product[]> {
+  // 1. Intentar obtener la versión más reciente del servidor
+  if (typeof window !== "undefined") {
+    try {
+      const url = category && category !== "todos"
+        ? `/api/products?category=${encodeURIComponent(category)}`
+        : "/api/products";
+
+      const res = await fetch(url, {
+        cache: "no-store",
+        headers: { "Pragma": "no-cache" },
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        if (json && Array.isArray(json.products) && json.products.length > 0) {
+          // Actualizamos la caché local del navegador
+          try {
+            if (!category || category === "todos") {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(json.products));
+            }
+          } catch {}
+          return json.products;
+        }
+      }
+    } catch (e) {
+      console.warn("Fallo al conectar con /api/products, usando respaldo local:", e);
+    }
+  }
+
+  // 2. Respaldo local si el servidor no responde o estamos offline
+  const currentList = typeof window !== "undefined" ? getClientProducts() : initialProducts;
+  if (category && category !== "todos") {
+    return currentList.filter((p) => p.category === category);
+  }
+  return currentList;
+}
+
+/**
+ * Guarda el inventario en el servidor central (/api/products)
+ * para que todos los dispositivos e incógnitos vean los cambios inmediatamente.
+ */
+export async function saveProducts(products: Product[]): Promise<void> {
+  // 1. Guardar en caché local inmediata y notificar
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+      window.dispatchEvent(new Event("inventory_updated"));
+    } catch (e) {
+      console.error("Error guardando localmente:", e);
+    }
+
+    // 2. Enviar al servidor para persistencia global
+    try {
+      await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ products }),
+      });
+    } catch (e) {
+      console.error("Error persistiendo en servidor /api/products:", e);
+    }
+  }
+}
+
+// Alias retrocompatible
+export const saveClientProducts = saveProducts;
+
+/**
+ * Obtiene los movimientos de inventario sincronizados desde el servidor.
+ */
+export async function getMovements(): Promise<InventoryMovement[]> {
+  if (typeof window !== "undefined") {
+    try {
+      const res = await fetch("/api/movements", {
+        cache: "no-store",
+        headers: { "Pragma": "no-cache" },
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && Array.isArray(json.movements)) {
+          try {
+            localStorage.setItem(MOVEMENTS_KEY, JSON.stringify(json.movements));
+          } catch {}
+          return json.movements;
+        }
+      }
+    } catch (e) {
+      console.warn("Fallo al conectar con /api/movements, usando respaldo local:", e);
+    }
+  }
+
+  return getClientMovements();
+}
+
+/**
+ * Registra un movimiento tanto en el servidor como localmente.
+ */
+export async function recordMovement(
   movement: Omit<InventoryMovement, "id" | "date">
-): InventoryMovement {
+): Promise<InventoryMovement> {
   const newMovement: InventoryMovement = {
     ...movement,
     id: "mov-" + Date.now(),
     date: new Date().toISOString(),
   };
 
+  // Guardar en caché local
   if (typeof window !== "undefined") {
     try {
       const list = getClientMovements();
       list.unshift(newMovement);
       localStorage.setItem(MOVEMENTS_KEY, JSON.stringify(list));
     } catch (e) {
-      console.error("Error guardando movimiento:", e);
+      console.error("Error guardando movimiento local:", e);
+    }
+
+    // Persistir en servidor
+    try {
+      await fetch("/api/movements", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(movement),
+      });
+    } catch (e) {
+      console.error("Error persistiendo movimiento en servidor:", e);
     }
   }
 
   return newMovement;
 }
 
-export async function getProducts(category?: string): Promise<Product[]> {
-  // Primero intentamos de cliente si estamos en navegador
-  const currentList = typeof window !== "undefined" ? getClientProducts() : initialProducts;
-
-  if (!isSupabaseConfigured || !supabase) {
-    if (category && category !== "todos") {
-      return currentList.filter((p) => p.category === category);
-    }
-    return currentList;
-  }
-
-  try {
-    let query = supabase.from("products").select("*");
-    if (category && category !== "todos") {
-      query = query.eq("category", category);
-    }
-
-    const { data, error } = await query;
-    if (error) throw error;
-
-    if (data && data.length > 0) {
-      return data.map((item) => ({
-        id: item.id,
-        name: item.name,
-        description: item.description,
-        price: Number(item.price),
-        images: item.images || [],
-        status: item.status,
-        availability: item.availability,
-        category: item.category,
-        specs: item.specs,
-        stock: item.stock !== undefined ? Number(item.stock) : 1,
-      }));
-    }
-
-    if (category && category !== "todos") {
-      return currentList.filter((p) => p.category === category);
-    }
-    return currentList;
-  } catch (error) {
-    console.warn("Usando catálogo local optimizado:", error);
-    if (category && category !== "todos") {
-      return currentList.filter((p) => p.category === category);
-    }
-    return currentList;
-  }
-}
+// Alias retrocompatible
+export const recordClientMovement = recordMovement;

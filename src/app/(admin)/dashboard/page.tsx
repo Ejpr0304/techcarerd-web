@@ -6,10 +6,10 @@ import Image from "next/image";
 import { Product, ProductCategory, ProductStatus, ProductAvailability, InventoryMovement } from "@/types";
 import {
   initialProducts,
-  getClientProducts,
-  saveClientProducts,
-  getClientMovements,
-  recordClientMovement,
+  getProducts,
+  saveProducts,
+  getMovements,
+  recordMovement,
 } from "@/services/products";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -82,12 +82,28 @@ export default function AdminDashboardPage() {
     setTimeout(() => setToastMsg(null), 3500);
   };
 
-  // Cargar productos y movimientos al montar
+  // Cargar productos y movimientos al montar desde el servidor
   useEffect(() => {
-    const list = getClientProducts();
-    setProducts(list);
-    const movs = getClientMovements();
-    setMovements(movs);
+    let isMounted = true;
+    async function loadData() {
+      try {
+        const list = await getProducts();
+        if (isMounted && list && list.length > 0) {
+          setProducts(list);
+        }
+        const movs = await getMovements();
+        if (isMounted) {
+          setMovements(movs);
+        }
+      } catch (e) {
+        console.error("Error cargando inventario en dashboard:", e);
+      }
+    }
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Productos filtrados
@@ -127,7 +143,7 @@ export default function AdminDashboardPage() {
     );
   };
 
-  const handleConfirmMovement = (e: React.FormEvent) => {
+  const handleConfirmMovement = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!movementModal.product) return;
 
@@ -165,10 +181,10 @@ export default function AdminDashboardPage() {
     });
 
     setProducts(updatedList);
-    saveClientProducts(updatedList);
+    await saveProducts(updatedList);
 
     // Registrar en movimientos
-    const mov = recordClientMovement({
+    const mov = await recordMovement({
       productId: prod.id,
       productName: prod.name,
       type: movementModal.type,
@@ -188,7 +204,7 @@ export default function AdminDashboardPage() {
   };
 
   // Crear nuevo producto
-  const handleCreateProduct = (e: React.FormEvent) => {
+  const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProd.name.trim() || newProd.price <= 0) {
       alert("Completa el nombre y un precio válido.");
@@ -213,10 +229,10 @@ export default function AdminDashboardPage() {
 
     const updatedList = [created, ...products];
     setProducts(updatedList);
-    saveClientProducts(updatedList);
+    await saveProducts(updatedList);
 
     if (created.stock > 0) {
-      const mov = recordClientMovement({
+      const mov = await recordMovement({
         productId: created.id,
         productName: created.name,
         type: "entrada",
@@ -244,7 +260,7 @@ export default function AdminDashboardPage() {
     if (confirm(`¿Estás seguro de que deseas eliminar "${name}" del catálogo?`)) {
       const updatedList = products.filter((p) => p.id !== id);
       setProducts(updatedList);
-      saveClientProducts(updatedList);
+      saveProducts(updatedList);
       showToast(`🗑️ "${name}" ha sido eliminado del catálogo.`);
     }
   };
@@ -257,7 +273,7 @@ export default function AdminDashboardPage() {
       )
     ) {
       setProducts(initialProducts);
-      saveClientProducts(initialProducts);
+      saveProducts(initialProducts);
       showToast("🔄 Catálogo restaurado con los 19 artículos oficiales.");
     }
   };
@@ -490,6 +506,7 @@ export default function AdminDashboardPage() {
                                   src={prod.images[0] || "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=800&q=80"}
                                   alt={prod.name}
                                   fill
+                                  unoptimized
                                   className="object-cover"
                                 />
                               </div>
@@ -959,12 +976,12 @@ export default function AdminDashboardPage() {
 
               <div>
                 <Label htmlFor="prodImg" className="text-xs text-slate-700 font-semibold">
-                  URL de Imagen (Unsplash u hospedada)
+                  URL de Imagen (Cualquier enlace de internet: Imgur, Cloudinary, Amazon, etc.)
                 </Label>
                 <Input
                   id="prodImg"
                   type="url"
-                  placeholder="https://images.unsplash.com/..."
+                  placeholder="https://... (pega el enlace de cualquier imagen en internet)"
                   value={newProd.imageUrl}
                   onChange={(e) => setNewProd({ ...newProd, imageUrl: e.target.value })}
                   className="mt-1 bg-slate-50 border-slate-200 text-slate-900 text-xs h-10 rounded-xl"
