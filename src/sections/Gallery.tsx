@@ -59,7 +59,7 @@ export function Gallery() {
   ];
 
   return (
-    <section id="galeria" className="py-24 sm:py-32 bg-[#F8FAFC] border-t border-slate-200/80">
+    <section id="galeria" className="py-24 sm:py-32 bg-[#EEF2F6] border-t border-slate-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}

@@ -80,7 +80,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} scroll-smooth`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-[#FBFBFD] text-slate-900 antialiased selection:bg-blue-600 selection:text-white">
+      <body className="min-h-screen bg-[#EEF2F6] text-slate-900 antialiased selection:bg-[#0B56A4] selection:text-white">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

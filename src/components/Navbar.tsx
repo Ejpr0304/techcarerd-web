@@ -35,16 +35,12 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="#inicio" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm tracking-tight shadow-sm">
-              TC
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base font-extrabold text-slate-900 tracking-tight leading-none">
-                TechCare<span className="text-blue-600">RD</span>
-              </span>
-              <span className="text-[9px] uppercase tracking-widest text-slate-500 font-semibold mt-0.5">
-                Lab & Taller
-              </span>
+            <div className="bg-white p-1 rounded-xl shadow-xs border border-slate-200/90 group-hover:border-blue-500/50 transition-all flex items-center justify-center">
+              <img
+                src="/logo-official.jpg"
+                alt="TechCareRD - Servicios Técnicos Profesionales"
+                className="h-10 sm:h-12 w-auto object-contain rounded-lg"
+              />
             </div>
           </Link>
 

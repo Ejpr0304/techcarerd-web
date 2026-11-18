@@ -44,7 +44,7 @@ export function Products() {
   };
 
   return (
-    <section id="productos" className="py-24 sm:py-32 bg-[#F8FAFC] border-t border-slate-200/80">
+    <section id="productos" className="py-24 sm:py-32 bg-[#EEF2F6] border-t border-slate-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
@@ -69,7 +69,7 @@ export function Products() {
               onClick={() => setActiveCategory(cat.value)}
               className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer ${
                 activeCategory === cat.value
-                  ? "bg-slate-900 text-white shadow-md scale-105"
+                  ? "bg-[#0B56A4] text-white shadow-md scale-105"
                   : "bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/80"
               }`}
             >

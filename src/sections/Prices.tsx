@@ -63,7 +63,7 @@ export function Prices() {
   ];
 
   return (
-    <section id="precios" className="py-24 sm:py-32 bg-white">
+    <section id="precios" className="py-24 sm:py-32 bg-[#EEF2F6]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
@@ -87,8 +87,8 @@ export function Prices() {
               key={idx}
               className={`flex flex-col justify-between rounded-3xl p-8 sm:p-10 transition-all duration-300 ${
                 cat.popular
-                  ? "bg-white border-2 border-blue-600 shadow-2xl relative lg:-translate-y-2"
-                  : "bg-[#F8FAFC] border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300"
+                  ? "bg-white border-2 border-[#0B56A4] shadow-2xl relative lg:-translate-y-2"
+                  : "bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300"
               }`}
             >
               <div>
@@ -97,8 +97,8 @@ export function Prices() {
                   <span
                     className={`text-[11px] font-bold tracking-wider uppercase px-3.5 py-1 rounded-full ${
                       cat.popular
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "bg-slate-200/80 text-slate-700"
+                        ? "bg-[#0B56A4] text-white shadow-sm"
+                        : "bg-slate-100 text-slate-700 border border-slate-200"
                     }`}
                   >
                     {cat.badge}
@@ -147,7 +147,7 @@ export function Prices() {
                 <Button
                   className={`w-full font-bold text-xs py-6 rounded-full cursor-pointer transition-all ${
                     cat.popular
-                      ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20"
+                      ? "bg-[#0B56A4] hover:bg-[#094380] text-white shadow-lg shadow-blue-600/20"
                       : "bg-slate-900 hover:bg-slate-800 text-white"
                   }`}
                 >

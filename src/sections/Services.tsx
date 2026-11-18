@@ -68,7 +68,7 @@ export function Services() {
   ];
 
   return (
-    <section id="servicios" className="py-24 sm:py-32 bg-[#F8FAFC] border-y border-slate-200/80">
+    <section id="servicios" className="py-24 sm:py-32 bg-white border-y border-slate-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header with pill badge */}
@@ -86,10 +86,10 @@ export function Services() {
         </div>
 
         {/* Interactive Stacked Pill Section (Inspired by Reference Image 'LED Processing') */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center bg-white rounded-3xl p-6 sm:p-12 border border-slate-200/80 shadow-[0_4px_30px_rgba(0,0,0,0.03)] mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center bg-[#F8FAFC] rounded-3xl p-6 sm:p-12 border border-slate-200/90 shadow-sm mb-16">
           {/* Left Description Column */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-800 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 bg-slate-200/80 text-slate-800 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
               Diagnóstico en Taller
             </div>
             
@@ -103,7 +103,7 @@ export function Services() {
 
             <div className="pt-2">
               <Link href="#contacto">
-                <Button className="bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs px-6 py-5 rounded-full gap-2 cursor-pointer shadow-sm">
+                <Button className="bg-[#0B56A4] hover:bg-[#094380] text-white font-semibold text-xs px-6 py-5 rounded-full gap-2 cursor-pointer shadow-sm">
                   Consultar por mi Equipo
                   <ArrowRight className="w-4 h-4" />
                 </Button>

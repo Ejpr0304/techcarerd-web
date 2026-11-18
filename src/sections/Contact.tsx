@@ -249,7 +249,7 @@ export function Contact() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-5 rounded-full shadow-md cursor-pointer transition-all"
+                className="w-full bg-[#0B56A4] hover:bg-[#094380] text-white font-bold text-xs py-5 rounded-full shadow-md cursor-pointer transition-all"
               >
                 {isSubmitting ? "Enviando Solicitud..." : "Enviar Solicitud de Diagnóstico"}
                 <Send className="w-3.5 h-3.5 ml-2" />

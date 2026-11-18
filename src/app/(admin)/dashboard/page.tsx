@@ -275,9 +275,11 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <header className="border-b border-slate-200 bg-white/80 backdrop-blur-md px-6 py-4 sticky top-0 z-30 flex items-center justify-between">
         <div className="flex items-center gap-3.5">
-          <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm shadow-sm">
-            TC
-          </div>
+          <img
+            src="/logo-official.jpg"
+            alt="TechCareRD"
+            className="h-10 sm:h-12 w-auto object-contain rounded-lg border border-slate-200/90 shadow-xs"
+          />
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-base font-extrabold text-slate-900 tracking-tight">TechCareRD</h1>

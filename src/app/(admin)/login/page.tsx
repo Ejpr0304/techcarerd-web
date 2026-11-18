@@ -68,8 +68,12 @@ export default function LoginPage() {
 
       <Card className="w-full max-w-md bg-white border-slate-200 shadow-2xl p-6 sm:p-8 rounded-3xl">
         <CardHeader className="text-center pb-4">
-          <div className="mx-auto w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center mb-4 shadow-sm font-black text-sm">
-            TC
+          <div className="mx-auto mb-4 flex justify-center">
+            <img
+              src="/logo-official.jpg"
+              alt="TechCareRD"
+              className="h-16 w-auto object-contain rounded-xl shadow-xs"
+            />
           </div>
           <CardTitle className="text-2xl font-black text-slate-900 tracking-tight">Portal Administrativo</CardTitle>
           <CardDescription className="text-slate-500 text-xs mt-1">

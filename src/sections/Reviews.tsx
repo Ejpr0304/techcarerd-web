@@ -48,7 +48,7 @@ export function Reviews() {
   ];
 
   return (
-    <section id="reseñas" className="py-24 sm:py-32 bg-white relative">
+    <section id="reseñas" className="py-24 sm:py-32 bg-[#EEF2F6] relative border-t border-slate-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
@@ -70,7 +70,7 @@ export function Reviews() {
           {reviews.map((rev) => (
             <div
               key={rev.id}
-              className="bg-[#F8FAFC] rounded-3xl p-7 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
+              className="bg-white rounded-3xl p-7 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
             >
               <div>
                 {/* Stars */}

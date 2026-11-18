@@ -41,13 +41,14 @@ export function Footer() {
           
           {/* Brand Column */}
           <div className="md:col-span-4 space-y-4">
-            <Link href="#inicio" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-white text-slate-950 flex items-center justify-center font-black text-sm">
-                TC
+            <Link href="#inicio" className="inline-block">
+              <div className="bg-white p-2 rounded-2xl shadow-lg inline-flex items-center hover:opacity-95 transition-opacity">
+                <img
+                  src="/logo-official.jpg"
+                  alt="TechCareRD - Servicios Técnicos Profesionales"
+                  className="h-12 sm:h-14 w-auto object-contain rounded-xl"
+                />
               </div>
-              <span className="text-xl font-black text-white tracking-tight">
-                TechCare<span className="text-blue-500">RD</span>
-              </span>
             </Link>
             <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-sm">
               Taller técnico especializado en el cuidado, optimización térmica y venta de repuestos seleccionados para consolas de videojuegos y laptops en Santo Domingo.

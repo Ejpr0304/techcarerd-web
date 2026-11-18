@@ -8,7 +8,7 @@ import { ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Cpu } from "lucide-rea
 
 export function Hero() {
   return (
-    <section id="inicio" className="relative pt-28 sm:pt-36 pb-20 sm:pb-28 overflow-hidden bg-white">
+    <section id="inicio" className="relative pt-28 sm:pt-36 pb-20 sm:pb-28 overflow-hidden bg-[#EEF2F6]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Cinematic Showcase Image (Inspired by reference banner) */}
@@ -72,7 +72,7 @@ export function Hero() {
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <Link href="#contacto">
-                <Button className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-7 py-6 rounded-full shadow-md hover:shadow-lg transition-all cursor-pointer gap-2">
+                <Button className="bg-[#0B56A4] hover:bg-[#094380] text-white font-bold text-xs px-7 py-6 rounded-full shadow-md hover:shadow-lg transition-all cursor-pointer gap-2">
                   Solicitar Diagnóstico
                   <ArrowRight className="w-4 h-4" />
                 </Button>
@@ -80,7 +80,7 @@ export function Hero() {
               <Link href="#productos">
                 <Button
                   variant="outline"
-                  className="border-slate-300 hover:border-slate-900 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs px-6 py-6 rounded-full transition-all cursor-pointer"
+                  className="border-slate-300 hover:border-slate-900 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs px-6 py-6 rounded-full transition-all cursor-pointer shadow-xs"
                 >
                   Ver Catálogo en Tienda
                 </Button>
@@ -88,7 +88,7 @@ export function Hero() {
             </div>
 
             {/* Micro badges */}
-            <div className="flex items-center gap-6 pt-4 text-xs font-semibold text-slate-500 border-t border-slate-100">
+            <div className="flex items-center gap-6 pt-4 text-xs font-semibold text-slate-600 border-t border-slate-300/60">
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                 <span>Garantía en Taller</span>

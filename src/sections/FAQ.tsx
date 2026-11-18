@@ -55,7 +55,7 @@ export function FAQ() {
   ];
 
   return (
-    <section id="faq" className="py-24 sm:py-32 bg-[#F8FAFC] border-t border-slate-200/80">
+    <section id="faq" className="py-24 sm:py-32 bg-white border-t border-slate-200/80">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
@@ -72,13 +72,13 @@ export function FAQ() {
           </p>
         </div>
 
-        {/* Accordion in clean white rounded items */}
+        {/* Accordion in clean rounded items */}
         <Accordion className="space-y-4">
           {faqs.map((faq) => (
             <AccordionItem
               key={faq.id}
               value={faq.id}
-              className="bg-white border border-slate-200/90 rounded-2xl px-6 py-2 shadow-sm transition-all data-[state=open]:shadow-md data-[state=open]:border-blue-500/50"
+              className="bg-[#F8FAFC] border border-slate-200/90 rounded-2xl px-6 py-2 shadow-xs transition-all data-[state=open]:shadow-md data-[state=open]:border-blue-500/50 data-[state=open]:bg-white"
             >
               <AccordionTrigger className="text-left text-sm sm:text-base font-bold text-slate-900 hover:text-blue-600 transition-colors py-4">
                 {faq.question}
