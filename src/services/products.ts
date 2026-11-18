@@ -326,8 +326,9 @@ export const initialProducts: Product[] = [
   },
 ];
 
-// Storage keys para cache de cliente
+// Storage keys para cache de cliente y control de versiones
 const STORAGE_KEY = "techcarerd_inventory_products";
+const TIMESTAMP_KEY = "techcarerd_inventory_timestamp";
 const MOVEMENTS_KEY = "techcarerd_inventory_movements";
 
 export function getClientProducts(): Product[] {
@@ -337,7 +338,8 @@ export function getClientProducts(): Product[] {
     if (!stored) {
       return initialProducts;
     }
-    return JSON.parse(stored);
+    const parsed = JSON.parse(stored);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : initialProducts;
   } catch {
     return initialProducts;
   }
@@ -355,9 +357,13 @@ export function getClientMovements(): InventoryMovement[] {
 
 /**
  * Obtiene el inventario sincronizado desde el servidor (API /api/products).
- * Funciona para cualquier dispositivo, pestaña de incógnito o navegador en tiempo real.
+ * Incorpora verificación de marcas de tiempo para garantizar que un reinicio
+ * de página NUNCA sobreescriba cambios locales con datos viejos del servidor.
  */
 export async function getProducts(category?: string): Promise<Product[]> {
+  const localList = typeof window !== "undefined" ? getClientProducts() : initialProducts;
+  const localTime = typeof window !== "undefined" ? Number(localStorage.getItem(TIMESTAMP_KEY) || 0) : 0;
+
   // 1. Intentar obtener la versión más reciente del servidor
   if (typeof window !== "undefined") {
     try {
@@ -372,14 +378,41 @@ export async function getProducts(category?: string): Promise<Product[]> {
 
       if (res.ok) {
         const json = await res.json();
-        if (json && Array.isArray(json.products) && json.products.length > 0) {
-          // Actualizamos la caché local del navegador
+        const serverProds = json.products;
+        const serverTime = Number(json.serverUpdatedAt || 0);
+
+        if (Array.isArray(serverProds) && serverProds.length > 0) {
+          // Si el cliente tiene modificaciones locales MÁS RECIENTES que el servidor
+          // (por ejemplo si el servidor se reinició o es serverless de solo lectura),
+          // NUNCA sobreescribimos los cambios del usuario:
+          if (localTime > serverTime && localList && localList.length > 0) {
+            // Re-enviamos silenciosamente los datos locales al servidor para resincronizar
+            fetch("/api/products", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ products: localList, updatedAt: localTime }),
+            }).catch(() => {});
+
+            if (category && category !== "todos") {
+              return localList.filter((p) => p.category === category);
+            }
+            return localList;
+          }
+
+          // Si el servidor está al día o es más nuevo, actualizamos la memoria local
           try {
             if (!category || category === "todos") {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(json.products));
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(serverProds));
+              if (serverTime) {
+                localStorage.setItem(TIMESTAMP_KEY, serverTime.toString());
+              }
             }
           } catch {}
-          return json.products;
+
+          if (category && category !== "todos") {
+            return serverProds.filter((p: Product) => p.category === category);
+          }
+          return serverProds;
         }
       }
     } catch (e) {
@@ -388,22 +421,24 @@ export async function getProducts(category?: string): Promise<Product[]> {
   }
 
   // 2. Respaldo local si el servidor no responde o estamos offline
-  const currentList = typeof window !== "undefined" ? getClientProducts() : initialProducts;
   if (category && category !== "todos") {
-    return currentList.filter((p) => p.category === category);
+    return localList.filter((p) => p.category === category);
   }
-  return currentList;
+  return localList;
 }
 
 /**
- * Guarda el inventario en el servidor central (/api/products)
- * para que todos los dispositivos e incógnitos vean los cambios inmediatamente.
+ * Guarda el inventario en el servidor central (/api/products) y en el almacenamiento local
+ * asegurando persistencia permanente ante cualquier reinicio de página.
  */
 export async function saveProducts(products: Product[]): Promise<void> {
+  const now = Date.now();
+
   // 1. Guardar en caché local inmediata y notificar
   if (typeof window !== "undefined") {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+      localStorage.setItem(TIMESTAMP_KEY, now.toString());
       window.dispatchEvent(new Event("inventory_updated"));
     } catch (e) {
       console.error("Error guardando localmente:", e);
@@ -414,7 +449,7 @@ export async function saveProducts(products: Product[]): Promise<void> {
       await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ products }),
+        body: JSON.stringify({ products, updatedAt: now }),
       });
     } catch (e) {
       console.error("Error persistiendo en servidor /api/products:", e);

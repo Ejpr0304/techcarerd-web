@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { getProducts } from "@/services/products";
+import { getProducts, getClientProducts } from "@/services/products";
 import { Product } from "@/types";
 import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/button";
 import { MessageSquare, ShoppingBag, CheckCircle, Tag } from "lucide-react";
 
 export function Products() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(getClientProducts);
   const [activeCategory, setActiveCategory] = useState<string>("todos");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function loadProducts() {

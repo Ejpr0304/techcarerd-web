@@ -10,7 +10,7 @@
     "status": "usado",
     "availability": "disponible",
     "category": "laptops",
-    "stock": 1,
+    "stock": 99,
     "specs": {
       "Procesador": "AMD Ryzen 7 5800HS",
       "Gráfica": "NVIDIA GeForce RTX 3060 6GB",

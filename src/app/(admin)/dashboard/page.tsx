@@ -10,6 +10,8 @@ import {
   saveProducts,
   getMovements,
   recordMovement,
+  getClientProducts,
+  getClientMovements,
 } from "@/services/products";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,8 +35,8 @@ import {
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [movements, setMovements] = useState<InventoryMovement[]>([]);
+  const [products, setProducts] = useState<Product[]>(getClientProducts);
+  const [movements, setMovements] = useState<InventoryMovement[]>(getClientMovements);
   const [activeTab, setActiveTab] = useState<"inventory" | "movements" | "metrics">("inventory");
   
   // Filtros

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerProducts, saveServerProducts } from "@/lib/server-storage";
+import { getServerProductsWithMeta, saveServerProducts } from "@/lib/server-storage";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -9,14 +9,15 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
 
-    let products = await getServerProducts();
+    const { products, updatedAt } = await getServerProductsWithMeta();
 
+    let filtered = products;
     if (category && category !== "todos") {
-      products = products.filter((p) => p.category === category);
+      filtered = products.filter((p) => p.category === category);
     }
 
     return NextResponse.json(
-      { products },
+      { products: filtered, serverUpdatedAt: updatedAt },
       {
         status: 200,
         headers: {
@@ -38,7 +39,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { products } = body;
+    const { products, updatedAt } = body;
 
     if (!Array.isArray(products)) {
       return NextResponse.json(
@@ -47,10 +48,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const saved = await saveServerProducts(products);
+    const timestamp = Number(updatedAt) || Date.now();
+    const saved = await saveServerProducts(products, timestamp);
 
     return NextResponse.json(
-      { success: saved, products },
+      { success: saved, products, serverUpdatedAt: timestamp },
       {
         status: 200,
         headers: {
