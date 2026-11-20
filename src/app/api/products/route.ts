@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
 
-    const { products, updatedAt } = await getServerProductsWithMeta();
+    const { products, updatedAt, provider } = await getServerProductsWithMeta();
 
     let filtered = products;
     if (category && category !== "todos") {
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { products: filtered, serverUpdatedAt: updatedAt },
+      { products: filtered, serverUpdatedAt: updatedAt, provider },
       {
         status: 200,
         headers: {
@@ -49,10 +49,15 @@ export async function POST(request: NextRequest) {
     }
 
     const timestamp = Number(updatedAt) || Date.now();
-    const saved = await saveServerProducts(products, timestamp);
+    const result = await saveServerProducts(products, timestamp);
 
     return NextResponse.json(
-      { success: saved, products, serverUpdatedAt: timestamp },
+      {
+        success: result.success,
+        provider: result.provider,
+        products,
+        serverUpdatedAt: timestamp,
+      },
       {
         status: 200,
         headers: {

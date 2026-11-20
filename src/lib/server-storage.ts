@@ -4,25 +4,39 @@ import { Product, InventoryMovement } from "@/types";
 import { initialProducts } from "@/services/products";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
-function getStoragePaths(filename: string): { readPath: string; writePath: string } {
-  const standardDir = path.join(process.cwd(), "data");
-  const standardPath = path.join(standardDir, filename);
+// 1. Detección de Vercel KV / Upstash Redis
+const kvUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "";
+const kvToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || "";
+const isKvConfigured = Boolean(kvUrl && kvToken);
 
-  // Determinar si standardDir tiene permisos de escritura (localhost) o es de solo lectura (Vercel Lambda)
-  let isWritable = false;
+export type StorageProvider = "supabase" | "kv" | "disk" | "memory";
+
+export function getActiveStorageProvider(): StorageProvider {
+  if (isKvConfigured) return "kv";
+  if (isSupabaseConfigured) return "supabase";
+  return isDiskWritable() ? "disk" : "memory";
+}
+
+function isDiskWritable(): boolean {
   try {
+    const standardDir = path.join(process.cwd(), "data");
     if (!fs.existsSync(standardDir)) {
       fs.mkdirSync(standardDir, { recursive: true });
     }
     const testFile = path.join(standardDir, ".write-test-" + Date.now());
     fs.writeFileSync(testFile, "ok");
     fs.unlinkSync(testFile);
-    isWritable = true;
+    return true;
   } catch {
-    isWritable = false;
+    return false;
   }
+}
 
-  if (isWritable) {
+function getStoragePaths(filename: string): { readPath: string; writePath: string } {
+  const standardDir = path.join(process.cwd(), "data");
+  const standardPath = path.join(standardDir, filename);
+
+  if (isDiskWritable()) {
     return { readPath: standardPath, writePath: standardPath };
   }
 
@@ -41,13 +55,68 @@ function getStoragePaths(filename: string): { readPath: string; writePath: strin
   };
 }
 
-// Memoria caché persistente durante el ciclo de vida del servidor
+// Memoria caché
 let memoryProducts: Product[] | null = null;
 let memoryMovements: InventoryMovement[] | null = null;
 let lastServerUpdate: number = Date.now();
 
-export async function getServerProductsWithMeta(): Promise<{ products: Product[]; updatedAt: number }> {
-  // 1. Si Supabase está configurado en producción (Vercel), obtener de Supabase
+// --- OPERACIONES CON VERCEL KV / UPSTASH REST ---
+async function getKvData<T>(key: string): Promise<T | null> {
+  if (!isKvConfigured) return null;
+  try {
+    const res = await fetch(`${kvUrl}/get/${key}`, {
+      headers: { Authorization: `Bearer ${kvToken}` },
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.result) {
+        return typeof data.result === "string" ? JSON.parse(data.result) : data.result;
+      }
+    }
+  } catch (e) {
+    console.error(`Error leyendo clave ${key} de Vercel KV:`, e);
+  }
+  return null;
+}
+
+async function setKvData<T>(key: string, value: T): Promise<boolean> {
+  if (!isKvConfigured) return false;
+  try {
+    const res = await fetch(`${kvUrl}/set/${key}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${kvToken}`,
+        "Content-Type": "text/plain",
+      },
+      body: JSON.stringify(value),
+    });
+    return res.ok;
+  } catch (e) {
+    console.error(`Error guardando clave ${key} en Vercel KV:`, e);
+    return false;
+  }
+}
+
+// --- PRODUCTOS ---
+export async function getServerProductsWithMeta(): Promise<{
+  products: Product[];
+  updatedAt: number;
+  provider: StorageProvider;
+}> {
+  const provider = getActiveStorageProvider();
+
+  // 1. Si Vercel KV / Upstash está configurado (1 clic en Vercel Storage)
+  if (isKvConfigured) {
+    const kvResult = await getKvData<{ products: Product[]; updatedAt: number }>("techcarerd_inventory");
+    if (kvResult && Array.isArray(kvResult.products) && kvResult.products.length > 0) {
+      memoryProducts = kvResult.products;
+      lastServerUpdate = kvResult.updatedAt || Date.now();
+      return { products: kvResult.products, updatedAt: lastServerUpdate, provider: "kv" };
+    }
+  }
+
+  // 2. Si Supabase está configurado
   if (isSupabaseConfigured && supabase) {
     try {
       const { data, error } = await supabase.from("products").select("*");
@@ -65,19 +134,19 @@ export async function getServerProductsWithMeta(): Promise<{ products: Product[]
           stock: item.stock !== undefined ? Number(item.stock) : 1,
         }));
         memoryProducts = mapped;
-        return { products: mapped, updatedAt: lastServerUpdate };
+        return { products: mapped, updatedAt: lastServerUpdate, provider: "supabase" };
       }
     } catch (e) {
-      console.warn("Supabase fetch falló, utilizando archivo local:", e);
+      console.warn("Supabase fetch falló, utilizando almacenamiento local:", e);
     }
   }
 
-  // 2. Si ya tenemos en memoria y hubo cambios recientes
+  // 3. Si ya está en memoria viva
   if (memoryProducts && memoryProducts.length > 0) {
-    return { products: memoryProducts, updatedAt: lastServerUpdate };
+    return { products: memoryProducts, updatedAt: lastServerUpdate, provider };
   }
 
-  // 3. Leer de disco (local o /tmp)
+  // 4. Leer de disco (localhost o archivo inicial empaquetado)
   const { readPath, writePath } = getStoragePaths("inventory.json");
   if (fs.existsSync(readPath)) {
     try {
@@ -85,14 +154,14 @@ export async function getServerProductsWithMeta(): Promise<{ products: Product[]
       const parsed = JSON.parse(content);
       if (Array.isArray(parsed) && parsed.length > 0) {
         memoryProducts = parsed;
-        return { products: parsed, updatedAt: lastServerUpdate };
+        return { products: parsed, updatedAt: lastServerUpdate, provider };
       }
     } catch (e) {
       console.error("Error leyendo archivo de inventario:", e);
     }
   }
 
-  // 4. Inicializar con la plantilla oficial de 19 artículos
+  // 5. Inicializar con plantilla oficial de 19 artículos
   try {
     fs.writeFileSync(writePath, JSON.stringify(initialProducts, null, 2), "utf-8");
   } catch (e) {
@@ -100,7 +169,7 @@ export async function getServerProductsWithMeta(): Promise<{ products: Product[]
   }
 
   memoryProducts = initialProducts;
-  return { products: initialProducts, updatedAt: lastServerUpdate };
+  return { products: initialProducts, updatedAt: lastServerUpdate, provider };
 }
 
 export async function getServerProducts(): Promise<Product[]> {
@@ -108,11 +177,24 @@ export async function getServerProducts(): Promise<Product[]> {
   return meta.products;
 }
 
-export async function saveServerProducts(products: Product[], clientTimestamp?: number): Promise<boolean> {
+export async function saveServerProducts(
+  products: Product[],
+  clientTimestamp?: number
+): Promise<{ success: boolean; provider: StorageProvider }> {
   memoryProducts = products;
   lastServerUpdate = clientTimestamp || Date.now();
+  const provider = getActiveStorageProvider();
 
-  // 1. Sincronizar con Supabase si está activo
+  // 1. Guardar en Vercel KV / Upstash si está activo
+  if (isKvConfigured) {
+    const saved = await setKvData("techcarerd_inventory", {
+      products,
+      updatedAt: lastServerUpdate,
+    });
+    if (saved) return { success: true, provider: "kv" };
+  }
+
+  // 2. Guardar en Supabase si está activo
   if (isSupabaseConfigured && supabase) {
     try {
       const { error } = await supabase.from("products").upsert(
@@ -130,24 +212,34 @@ export async function saveServerProducts(products: Product[], clientTimestamp?: 
           updated_at: new Date().toISOString(),
         }))
       );
-      if (error) console.error("Error guardando en Supabase:", error);
+      if (!error) return { success: true, provider: "supabase" };
+      console.error("Error guardando en Supabase:", error);
     } catch (e) {
       console.error("Excepción en upsert de Supabase:", e);
     }
   }
 
-  // 2. Guardar en disco (directo en localhost, o /tmp en Vercel)
+  // 3. Guardar en disco (localhost o /tmp)
   try {
     const { writePath } = getStoragePaths("inventory.json");
     fs.writeFileSync(writePath, JSON.stringify(products, null, 2), "utf-8");
-    return true;
+    return { success: true, provider: isDiskWritable() ? "disk" : "memory" };
   } catch (e) {
     console.error("Error guardando inventario en disco:", e);
-    return false;
+    return { success: false, provider: "memory" };
   }
 }
 
+// --- MOVIMIENTOS ---
 export async function getServerMovements(): Promise<InventoryMovement[]> {
+  if (isKvConfigured) {
+    const kvMovs = await getKvData<InventoryMovement[]>("techcarerd_movements");
+    if (Array.isArray(kvMovs)) {
+      memoryMovements = kvMovs;
+      return kvMovs;
+    }
+  }
+
   if (memoryMovements) return memoryMovements;
 
   const { readPath } = getStoragePaths("movements.json");
@@ -179,6 +271,10 @@ export async function recordServerMovement(
   const list = await getServerMovements();
   list.unshift(newMovement);
   memoryMovements = list;
+
+  if (isKvConfigured) {
+    await setKvData("techcarerd_movements", list);
+  }
 
   try {
     const { writePath } = getStoragePaths("movements.json");
